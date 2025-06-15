@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Corporal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados e para usar a fonte Poppins */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Melhora a aparência dos inputs numéricos */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-teal-600">Avaliação Corporal</h1>
+            <p class="mt-2 text-slate-600">Insira seus dados para uma análise completa.</p>
+        </header>
+
+        <!-- Formulário de Entrada de Dados -->
+        <form id="assessment-form" class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Coluna 1 -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-slate-700 mb-1">Sexo</label>
+                        <select id="gender" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                            <option value="male">Masculino</option>
+                            <option value="female">Feminino</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="weight" class="block text-sm font-medium text-slate-700 mb-1">Peso (kg)</label>
+                        <input type="number" id="weight" step="0.1" placeholder="Ex: 70.5" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                     <div>
+                        <label for="age" class="block text-sm font-medium text-slate-700 mb-1">Idade (anos)</label>
+                        <input type="number" id="age" placeholder="Ex: 35" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                </div>
+                <!-- Coluna 2 -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="height" class="block text-sm font-medium text-slate-700 mb-1">Altura (cm)</label>
+                        <input type="number" id="height" placeholder="Ex: 175" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                    <div>
+                        <label for="waist" class="block text-sm font-medium text-slate-700 mb-1">Cintura (cm)</label>
+                        <input type="number" id="waist" step="0.1" placeholder="Ex: 85" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                        <p class="text-xs text-slate-500 mt-1">Medida no ponto médio entre a crista ilíaca e a última costela.</p>
+                    </div>
+                    <div>
+                        <label for="hip" class="block text-sm font-medium text-slate-700 mb-1">Quadril (cm)</label>
+                        <input type="number" id="hip" step="0.1" placeholder="Ex: 100" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                </div>
+                <!-- Coluna 3 -->
+                <div class="space-y-4">
+                     <div>
+                        <label for="abdomen" class="block text-sm font-medium text-slate-700 mb-1">Abdômen (cm)</label>
+                        <input type="number" id="abdomen" step="0.1" placeholder="Ex: 90" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                        <p class="text-xs text-slate-500 mt-1">Medido na altura da cicatriz umbilical.</p>
+                    </div>
+                    <div>
+                        <label for="neck" class="block text-sm font-medium text-slate-700 mb-1">Pescoço (cm)</label>
+                        <input type="number" id="neck" step="0.1" placeholder="Ex: 38" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <button type="submit" class="w-full md:w-auto bg-teal-600 text-white font-bold py-3 px-12 rounded-lg hover:bg-teal-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300">
+                    Calcular Resultados
+                </button>
+            </div>
+        </form>
+
+        <!-- Seção de Resultados (inicialmente oculta) -->
+        <section id="results-section" class="max-w-4xl mx-auto mt-12 hidden">
+            <h2 class="text-3xl font-bold text-center mb-8 text-teal-600">Seus Resultados</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card IMC -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-2">Índice de Massa Corporal (IMC)</h3>
+                    <p id="imc-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="imc-classification" class="mt-1 font-semibold">-</p>
+                    <p class="text-xs text-slate-500 mt-3">Fonte: OMS. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
+                </div>
+
+                <!-- Card Circunferência da Cintura -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-2">Risco na Circunferência da Cintura</h3>
+                    <p id="waist-circumference-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="waist-circumference-classification" class="mt-1 font-semibold">-</p>
+                    <p class="text-xs text-slate-500 mt-3">Fonte: OMS. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
+                </div>
+
+                <!-- Card Relação Cintura-Quadril (RCQ) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-2">Relação Cintura-Quadril (RCQ)</h3>
+                    <p id="whr-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="whr-classification" class="mt-1 font-semibold">-</p>
+                    <p class="text-xs text-slate-500 mt-3">Fonte: Pitanga et al. (2011). É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
+                </div>
+
+                <!-- Card Razão Cintura-Estatura (RCE) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-2">Razão Cintura-Estatura (RCE)</h3>
+                    <p id="whtr-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="whtr-classification" class="mt-1 font-semibold">-</p>
+                    <p class="text-xs text-slate-500 mt-3">Fonte: M. Ashwell, P. Gunn and S. Gibson. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
+                </div>
+                
+                <!-- Card Circunferência do Pescoço (CP) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-2">Risco na Circunferência do Pescoço (CP)</h3>
+                    <p id="neck-circumference-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="neck-circumference-classification" class="mt-1 font-semibold">-</p>
+                    <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
+                </div>
+
+                <!-- Card Índice de Adiposidade Corporal (IAC) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-2">Índice de Adiposidade Corporal (IAC)</h3>
+                    <p id="bai-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="bai-classification" class="mt-1 font-semibold">-</p>
+                    <p class="text-xs text-slate-500 mt-3">Fonte: Bergman et al. (2011). É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
+                </div>
+
+                <!-- Card Equações de Lahav -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 md:col-span-2">
+                    <h3 class="font-bold text-xl mb-2">% Gordura Corporal </h3>
+                    <p id="lahav-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="lahav-classification" class="mt-1 font-semibold">Válido para idades entre 20 e 60 anos.</p>
+                    <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos, Fonte: Lahav et al., 2018.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-6 bg-slate-100 border-t border-slate-200">
+        <p class="text-slate-600">Desenvolvido por Rômulo Monteiro (@romulomonteirooficial)</p>
+    </footer>
+
+    <script>
+        // --- LÓGICA DO FORMULÁRIO ---
+        const form = document.getElementById('assessment-form');
+        const resultsSection = document.getElementById('results-section');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            // --- COLETA DE DADOS DO FORMULÁRIO ---
+            const gender = document.getElementById('gender').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const heightCm = parseFloat(document.getElementById('height').value);
+            const age = parseInt(document.getElementById('age').value);
+            const waist = parseFloat(document.getElementById('waist').value);
+            const hip = parseFloat(document.getElementById('hip').value);
+            const abdomen = parseFloat(document.getElementById('abdomen').value);
+            const neck = parseFloat(document.getElementById('neck').value);
+            const heightM = heightCm / 100;
+
+            // --- CÁLCULOS E ATUALIZAÇÃO DA UI ---
+
+            // 1. IMC
+            if (weight > 0 && heightM > 0) {
+                const imc = weight / (heightM * heightM);
+                let imcClass = '';
+                if (imc < 18.5) imcClass = 'Baixo Peso';
+                else if (imc < 25) imcClass = 'Peso Normal';
+                else if (imc < 30) imcClass = 'Sobrepeso';
+                else if (imc < 35) imcClass = 'Obesidade Grau I';
+                else if (imc < 40) imcClass = 'Obesidade Grau II';
+                else imcClass = 'Obesidade Grau III';
+                document.getElementById('imc-result').textContent = imc.toFixed(2);
+                document.getElementById('imc-classification').textContent = imcClass;
+            } else {
+                document.getElementById('imc-result').textContent = '-';
+                document.getElementById('imc-classification').textContent = 'Dados insuficientes (peso e altura).';
+            }
+
+            // 2. Circunferência da Cintura
+            if (waist > 0) {
+                let waistClass = 'Risco baixo';
+                if ((gender === 'male' && waist > 102) || (gender === 'female' && waist > 88)) {
+                    waistClass = 'Risco muito aumentado';
+                } else if ((gender === 'male' && waist > 94) || (gender === 'female' && waist > 80)) {
+                    waistClass = 'Risco aumentado (alerta)';
+                }
+                document.getElementById('waist-circumference-result').textContent = `${waist} cm`;
+                document.getElementById('waist-circumference-classification').textContent = waistClass;
+            } else {
+                document.getElementById('waist-circumference-result').textContent = '-';
+                document.getElementById('waist-circumference-classification').textContent = 'Dados insuficientes (cintura).';
+            }
+
+            // 3. Relação Cintura-Quadril (RCQ)
+            if (waist > 0 && hip > 0) {
+                const whr = waist / hip;
+                let whrClass = 'Risco baixo';
+                 if ((gender === 'male' && whr >= 0.92) || (gender === 'female' && whr >= 0.84)) {
+                   whrClass = 'Risco alto';
+                }
+                document.getElementById('whr-result').textContent = whr.toFixed(2);
+                document.getElementById('whr-classification').textContent = whrClass;
+            } else {
+                document.getElementById('whr-result').textContent = '-';
+                document.getElementById('whr-classification').textContent = 'Dados insuficientes (cintura e quadril).';
+            }
+
+            // 4. Razão Cintura-Estatura (RCE)
+            if (waist > 0 && heightCm > 0) {
+                const whtr = waist / heightCm;
+                let whtrClass = '';
+                if (whtr < 0.5) whtrClass = 'Adiposidade central saudável / Sem risco aumentado.';
+                else if (whtr <= 0.59) whtrClass = 'Adiposidade central elevada / Risco aumentado.';
+                else whtrClass = 'Adiposidade central alta / Risco ainda mais elevado.';
+                document.getElementById('whtr-result').textContent = whtr.toFixed(2);
+                document.getElementById('whtr-classification').textContent = whtrClass;
+            } else {
+                document.getElementById('whtr-result').textContent = '-';
+                document.getElementById('whtr-classification').textContent = 'Dados insuficientes (cintura e altura).';
+            }
+
+            // 5. Circunferência do Pescoço (CP)
+            if (neck > 0) {
+                 let neckClass = 'Risco baixo de DCV';
+                 if (gender === 'male') {
+                    if (neck >= 40.1) neckClass = 'Alto risco de DCV';
+                    else if (neck >= 39.6) neckClass = 'Risco intermediário de DCV';
+                    else if (neck >= 38.7) neckClass = 'Baixo risco de DCV';
+                 } else { // female
+                    if (neck >= 35.7) neckClass = 'Alto risco de DCV';
+                    else if (neck >= 34.7) neckClass = 'Risco intermediário de DCV';
+                    else if (neck >= 33.5) neckClass = 'Baixo risco de DCV';
+                 }
+                 document.getElementById('neck-circumference-result').textContent = `${neck} cm`;
+                 document.getElementById('neck-circumference-classification').textContent = neckClass;
+            } else {
+                document.getElementById('neck-circumference-result').textContent = '-';
+                document.getElementById('neck-circumference-classification').textContent = 'Dados insuficientes (pescoço).';
+            }
+
+            // 6. Índice de Adiposidade Corporal (IAC)
+            if (hip > 0 && heightM > 0) {
+                const bai = (hip / (heightM * Math.sqrt(heightM))) - 18;
+                let baiClass = 'Adiposidade normal.';
+                if ((gender === 'male' && bai >= 25) || (gender === 'female' && bai >= 35)) {
+                    baiClass = 'Excesso de adiposidade corporal.';
+                }
+                document.getElementById('bai-result').textContent = `${bai.toFixed(1)}%`;
+                document.getElementById('bai-classification').textContent = baiClass;
+            } else {
+                document.getElementById('bai-result').textContent = '-';
+                document.getElementById('bai-classification').textContent = 'Dados insuficientes (quadril e altura).';
+            }
+
+            // 7. Equações de Lahav
+            if (heightCm > 0 && abdomen > 0 && neck > 0 && age >= 20 && age <= 60) {
+                let gc = 0;
+                if (gender === 'male') {
+                    gc = 10.111 - (0.239 * heightCm) + (0.808 * abdomen) - (0.518 * neck);
+                } else { // female
+                    gc = 19.197 - (0.239 * heightCm) + (0.808 * abdomen) - (0.518 * neck);
+                }
+                document.getElementById('lahav-result').textContent = `${gc.toFixed(2)}%`;
+                document.getElementById('lahav-classification').textContent = `Estimativa de gordura corporal para ${gender === 'male' ? 'homens' : 'mulheres'} entre 20 e 60 anos.`;
+            } else {
+                document.getElementById('lahav-result').textContent = '-';
+                let reason = 'Dados insuficientes (altura, abdômen, pescoço).';
+                if (!(age >= 20 && age <= 60)) {
+                    reason = 'Cálculo válido apenas para idades entre 20 e 60 anos.'
+                }
+                 document.getElementById('lahav-classification').textContent = reason;
+            }
+
+
+            // --- MOSTRAR RESULTADOS ---
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
