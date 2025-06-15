@@ -32,6 +32,7 @@
         <header class="text-center mb-10">
             <h1 class="text-4xl md:text-5xl font-bold text-teal-600">Avaliação Corporal</h1>
             <p class="mt-2 text-slate-600">Insira seus dados para uma análise completa.</p>
+            <p class="mt-4 text-sm text-slate-500 max-w-2xl mx-auto">Preencha com o máximo de informações possível. Caso algum dado não esteja disponível, não tem problema, realizaremos os cálculos com as informações que você nos fornecer.</p>
         </header>
 
         <!-- Formulário de Entrada de Dados -->
@@ -69,6 +70,7 @@
                     <div>
                         <label for="hip" class="block text-sm font-medium text-slate-700 mb-1">Quadril (cm)</label>
                         <input type="number" id="hip" step="0.1" placeholder="Ex: 100" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                        <p class="text-xs text-slate-500 mt-1">O ponto de medição é a parte mais larga do bumbum (nádegas).</p>
                     </div>
                 </div>
                 <!-- Coluna 3 -->
@@ -105,7 +107,7 @@
 
                 <!-- Card Circunferência da Cintura -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Risco na Circunferência da Cintura</h3>
+                    <h3 class="font-bold text-xl mb-2">Circunferência da Cintura</h3>
                     <p id="waist-circumference-result" class="text-4xl font-bold text-teal-500">-</p>
                     <p id="waist-circumference-classification" class="mt-1 font-semibold">-</p>
                     <p class="text-xs text-slate-500 mt-3">Fonte: OMS. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
@@ -129,7 +131,7 @@
                 
                 <!-- Card Circunferência do Pescoço (CP) -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Risco na Circunferência do Pescoço (CP)</h3>
+                    <h3 class="font-bold text-xl mb-2">Circunferência do Pescoço (CP)</h3>
                     <p id="neck-circumference-result" class="text-4xl font-bold text-teal-500">-</p>
                     <p id="neck-circumference-classification" class="mt-1 font-semibold">-</p>
                     <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
@@ -143,18 +145,26 @@
                     <p class="text-xs text-slate-500 mt-3">Fonte: Bergman et al. (2011). É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
                 </div>
 
-                <!-- Card Equações de Lahav -->
+                <!-- Card Equações de Gordura Corporal -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 md:col-span-2">
-                    <h3 class="font-bold text-xl mb-2">% Gordura Corporal </h3>
-                    <p id="lahav-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="lahav-classification" class="mt-1 font-semibold">Válido para idades entre 20 e 60 anos.</p>
-                    <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos, Fonte: Lahav et al., 2018.</p>
+                    <h3 class="font-bold text-xl mb-2">% Gordura Corporal</h3>
+                    <p id="bfp-result" class="text-4xl font-bold text-teal-500">-</p>
+                    <p id="bfp-classification" class="mt-1 font-semibold">Válido para idades a partir de 20 anos.</p>
+                    <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos. Fonte: Woolcott et al. (2018).</p>
                 </div>
             </div>
         </section>
+
+        <!-- Mensagem Final de Alerta -->
+        <div class="max-w-3xl mx-auto mt-16 text-center px-4">
+            <p class="text-slate-600 font-medium bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                É importante destacar que estes são apenas valores estimados. Sempre consulte um profissional de saúde para uma avaliação precisa. Não se preocupe com os resultados agora — eles servem apenas como um direcionamento para que você busque ajuda especializada.
+            </p>
+        </div>
+
     </main>
 
-    <footer class="text-center py-6 bg-slate-100 border-t border-slate-200">
+    <footer class="text-center py-6 bg-slate-100 border-t border-slate-200 mt-12">
         <p class="text-slate-600">Desenvolvido por Rômulo Monteiro (@romulomonteirooficial)</p>
     </footer>
 
@@ -198,11 +208,11 @@
 
             // 2. Circunferência da Cintura
             if (waist > 0) {
-                let waistClass = 'Risco baixo';
+                let waistClass = 'Risco baixo para doenças crônicas';
                 if ((gender === 'male' && waist > 102) || (gender === 'female' && waist > 88)) {
-                    waistClass = 'Risco muito aumentado';
+                    waistClass = 'Risco muito aumentado para doenças crônicas';
                 } else if ((gender === 'male' && waist > 94) || (gender === 'female' && waist > 80)) {
-                    waistClass = 'Risco aumentado (alerta)';
+                    waistClass = 'Risco aumentado (alerta) para doenças crônicas';
                 }
                 document.getElementById('waist-circumference-result').textContent = `${waist} cm`;
                 document.getElementById('waist-circumference-classification').textContent = waistClass;
@@ -214,9 +224,9 @@
             // 3. Relação Cintura-Quadril (RCQ)
             if (waist > 0 && hip > 0) {
                 const whr = waist / hip;
-                let whrClass = 'Risco baixo';
+                let whrClass = 'Risco baixo para doenças crônicas';
                  if ((gender === 'male' && whr >= 0.92) || (gender === 'female' && whr >= 0.84)) {
-                   whrClass = 'Risco alto';
+                   whrClass = 'Risco alto para doenças crônicas';
                 }
                 document.getElementById('whr-result').textContent = whr.toFixed(2);
                 document.getElementById('whr-classification').textContent = whrClass;
@@ -229,9 +239,9 @@
             if (waist > 0 && heightCm > 0) {
                 const whtr = waist / heightCm;
                 let whtrClass = '';
-                if (whtr < 0.5) whtrClass = 'Adiposidade central saudável / Sem risco aumentado.';
-                else if (whtr <= 0.59) whtrClass = 'Adiposidade central elevada / Risco aumentado.';
-                else whtrClass = 'Adiposidade central alta / Risco ainda mais elevado.';
+                if (whtr < 0.5) whtrClass = 'Adiposidade central saudável / Risco baixo para doenças crônicas.';
+                else if (whtr <= 0.59) whtrClass = 'Adiposidade central elevada / Risco aumentado para doenças crônicas.';
+                else whtrClass = 'Adiposidade central alta / Risco muito elevado para doenças crônicas.';
                 document.getElementById('whtr-result').textContent = whtr.toFixed(2);
                 document.getElementById('whtr-classification').textContent = whtrClass;
             } else {
@@ -241,15 +251,13 @@
 
             // 5. Circunferência do Pescoço (CP)
             if (neck > 0) {
-                 let neckClass = 'Risco baixo de DCV';
+                 let neckClass = 'Baixo risco para doenças crônicas';
                  if (gender === 'male') {
-                    if (neck >= 40.1) neckClass = 'Alto risco de DCV';
-                    else if (neck >= 39.6) neckClass = 'Risco intermediário de DCV';
-                    else if (neck >= 38.7) neckClass = 'Baixo risco de DCV';
+                    if (neck >= 40.1) neckClass = 'Alto risco para doenças crônicas';
+                    else if (neck >= 39.6) neckClass = 'Risco moderado para doenças crônicas';
                  } else { // female
-                    if (neck >= 35.7) neckClass = 'Alto risco de DCV';
-                    else if (neck >= 34.7) neckClass = 'Risco intermediário de DCV';
-                    else if (neck >= 33.5) neckClass = 'Baixo risco de DCV';
+                    if (neck >= 35.7) neckClass = 'Alto risco para doenças crônicas';
+                    else if (neck >= 34.7) neckClass = 'Risco moderado para doenças crônicas';
                  }
                  document.getElementById('neck-circumference-result').textContent = `${neck} cm`;
                  document.getElementById('neck-circumference-classification').textContent = neckClass;
@@ -272,23 +280,19 @@
                 document.getElementById('bai-classification').textContent = 'Dados insuficientes (quadril e altura).';
             }
 
-            // 7. Equações de Lahav
-            if (heightCm > 0 && abdomen > 0 && neck > 0 && age >= 20 && age <= 60) {
-                let gc = 0;
-                if (gender === 'male') {
-                    gc = 10.111 - (0.239 * heightCm) + (0.808 * abdomen) - (0.518 * neck);
-                } else { // female
-                    gc = 19.197 - (0.239 * heightCm) + (0.808 * abdomen) - (0.518 * neck);
-                }
-                document.getElementById('lahav-result').textContent = `${gc.toFixed(2)}%`;
-                document.getElementById('lahav-classification').textContent = `Estimativa de gordura corporal para ${gender === 'male' ? 'homens' : 'mulheres'} entre 20 e 60 anos.`;
+            // 7. Equações de Gordura Corporal
+            if (heightCm > 0 && waist > 0 && age >= 20) {
+                const sexValue = (gender === 'female') ? 1 : 0;
+                const gc = 64 - (20 * (heightCm / waist)) + (12 * sexValue);
+                document.getElementById('bfp-result').textContent = `${gc.toFixed(2)}%`;
+                document.getElementById('bfp-classification').textContent = `Estimativa de gordura corporal.`;
             } else {
-                document.getElementById('lahav-result').textContent = '-';
-                let reason = 'Dados insuficientes (altura, abdômen, pescoço).';
-                if (!(age >= 20 && age <= 60)) {
-                    reason = 'Cálculo válido apenas para idades entre 20 e 60 anos.'
+                document.getElementById('bfp-result').textContent = '-';
+                let reason = 'Dados insuficientes (altura, cintura).';
+                if (!(age >= 20)) {
+                    reason = 'Cálculo válido apenas para idades a partir de 20 anos.'
                 }
-                 document.getElementById('lahav-classification').textContent = reason;
+                 document.getElementById('bfp-classification').textContent = reason;
             }
 
 
