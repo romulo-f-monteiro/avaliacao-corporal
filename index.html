@@ -3,303 +3,729 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação Corporal</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Avaliação Corporal - Rômulo Ferreira Monteiro</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        signature: ['Dancing Script', 'cursive'],
+                        display: ['Anton', 'sans-serif'],
+                    },
+                    colors: {
+                        teal: { 50: '#f0fdfa', 100: '#ccfbf1', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a' }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Estilos personalizados e para usar a fonte Poppins */
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        /* Melhora a aparência dos inputs numéricos */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield;
+        body { font-family: 'Poppins', sans-serif; }
+        
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Estilo para Accordion */
+        details > summary { list-style: none; cursor: pointer; outline: none; }
+        details > summary::-webkit-details-marker { display: none; }
+
+        /* --- CSS DE IMPRESSÃO --- */
+        @media print {
+            @page { margin: 1cm; size: A4; }
+            
+            /* Remove animações */
+            * { animation: none !important; transition: none !important; }
+
+            html, body { 
+                height: auto !important; 
+                min-height: auto !important;
+                overflow: visible !important; 
+                background: white !important; 
+                width: 100% !important;
+                position: static !important;
+                display: block !important;
+            }
+
+            /* Esconde navegação e botões */
+            nav, button, .no-print, #info-footer, header div.absolute, #pdf-floating-actions { display: none !important; }
+
+            header { 
+                position: static !important; 
+                background: none !important; 
+                color: #000 !important; 
+                box-shadow: none !important; 
+                padding: 0 0 20px 0 !important; 
+                text-align: center !important;
+                display: block !important;
+                border-bottom: 2px solid #eee;
+                margin-bottom: 20px;
+            }
+            header h1 { color: #0f766e !important; -webkit-text-fill-color: #0f766e !important; }
+            
+            .flex, .flex-1, .flex-col, .h-screen { 
+                display: block !important; 
+                height: auto !important; 
+                overflow: visible !important; 
+                flex: none !important;
+            }
+
+            aside {
+                width: 100% !important;
+                border: 1px solid #ddd !important;
+                border-radius: 8px;
+                margin-bottom: 30px !important;
+                padding: 15px !important;
+                page-break-inside: avoid;
+            }
+            aside input { border: none !important; font-weight: bold; padding: 0 !important; margin-bottom: 5px; }
+            aside label { color: #666 !important; font-size: 10px !important; text-transform: uppercase; }
+
+            main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+            #content-area { padding: 0 !important; overflow: visible !important; }
+
+            /* Força exibição de todos os conteúdos no modo Print-All */
+            body.print-all .tab-content { 
+                display: block !important; 
+                opacity: 1 !important;
+                visibility: visible !important;
+                page-break-inside: avoid; 
+                border: 1px solid #eee; 
+                padding: 20px; 
+                margin-bottom: 30px; 
+                border-radius: 10px;
+            }
+            
+            body.print-single .tab-content { display: none !important; }
+            body.print-single .tab-content.active { display: block !important; }
+
+            /* --- CORREÇÃO DO TAMANHO DAS FOTOS NO PDF --- */
+            #photo-grid {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 10px !important;
+                justify-content: flex-start !important;
+            }
+            
+            /* Define um tamanho fixo e pequeno para o container da foto na impressão */
+            #photo-grid > div {
+                width: 6cm !important; /* Largura fixa de aprox 6cm */
+                height: 8cm !important; /* Altura fixa de aprox 8cm */
+                flex: 0 0 auto !important;
+                page-break-inside: avoid !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            /* Garante que a imagem caiba dentro desse tamanho menor */
+            #photo-grid img {
+                object-fit: contain !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .bg-slate-50, .bg-teal-50, .bg-white { background: transparent !important; }
+            .shadow-sm, .shadow-md, .shadow-lg { box-shadow: none !important; }
+            textarea { border: 1px solid #ddd !important; resize: none; }
+            select { appearance: none; border: none; font-weight: bold; background: transparent; padding: 0; }
+            
+            .print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 5px; background: white; }
+            
+            details[open] summary ~ * { animation: none; }
+            details summary { display: none; }
+            details div { display: block !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden print-single">
 
-    <main class="container mx-auto px-4 py-8 md:py-12">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold text-teal-600">Avaliação Corporal</h1>
-            <p class="mt-2 text-slate-600">Insira seus dados para uma análise completa.</p>
-            <p class="mt-4 text-sm text-slate-500 max-w-2xl mx-auto">Preencha com o máximo de informações possível. Caso algum dado não esteja disponível, não tem problema, realizaremos os cálculos com as informações que você nos fornecer.</p>
-        </header>
-
-        <!-- Formulário de Entrada de Dados -->
-        <form id="assessment-form" class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Coluna 1 -->
-                <div class="space-y-4">
-                    <div>
-                        <label for="gender" class="block text-sm font-medium text-slate-700 mb-1">Sexo</label>
-                        <select id="gender" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                            <option value="male">Masculino</option>
-                            <option value="female">Feminino</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="weight" class="block text-sm font-medium text-slate-700 mb-1">Peso (kg)</label>
-                        <input type="number" id="weight" step="0.1" placeholder="Ex: 70.5" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                    </div>
-                     <div>
-                        <label for="age" class="block text-sm font-medium text-slate-700 mb-1">Idade (anos)</label>
-                        <input type="number" id="age" placeholder="Ex: 35" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                    </div>
-                </div>
-                <!-- Coluna 2 -->
-                <div class="space-y-4">
-                    <div>
-                        <label for="height" class="block text-sm font-medium text-slate-700 mb-1">Altura (cm)</label>
-                        <input type="number" id="height" placeholder="Ex: 175" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                    </div>
-                    <div>
-                        <label for="waist" class="block text-sm font-medium text-slate-700 mb-1">Cintura (cm)</label>
-                        <input type="number" id="waist" step="0.1" placeholder="Ex: 85" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                        <p class="text-xs text-slate-500 mt-1">Medida no ponto médio entre a crista ilíaca e a última costela.</p>
-                    </div>
-                    <div>
-                        <label for="hip" class="block text-sm font-medium text-slate-700 mb-1">Quadril (cm)</label>
-                        <input type="number" id="hip" step="0.1" placeholder="Ex: 100" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                        <p class="text-xs text-slate-500 mt-1">O ponto de medição é a parte mais larga do bumbum (nádegas).</p>
-                    </div>
-                </div>
-                <!-- Coluna 3 -->
-                <div class="space-y-4">
-                     <div>
-                        <label for="abdomen" class="block text-sm font-medium text-slate-700 mb-1">Abdômen (cm)</label>
-                        <input type="number" id="abdomen" step="0.1" placeholder="Ex: 90" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                        <p class="text-xs text-slate-500 mt-1">Medido na altura da cicatriz umbilical.</p>
-                    </div>
-                    <div>
-                        <label for="neck" class="block text-sm font-medium text-slate-700 mb-1">Pescoço (cm)</label>
-                        <input type="number" id="neck" step="0.1" placeholder="Ex: 38" class="w-full p-3 bg-slate-100 border-transparent rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                    </div>
-                </div>
+    <!-- Topo Centralizado -->
+    <header class="bg-teal-800 text-white shadow-lg z-20 shrink-0 relative overflow-hidden p-4">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-teal-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+        <div class="container mx-auto flex flex-col justify-center items-center gap-2 relative z-10">
+            <div class="text-center w-full">
+                <h1 class="font-display text-4xl md:text-6xl tracking-wider mb-1 uppercase text-center w-full" style="color: #ccfbf1; text-shadow: 2px 2px 0px rgba(0,0,0,0.2);">Avaliação Corporal</h1>
+                <p class="font-signature text-xl md:text-2xl text-teal-200 opacity-90 text-center" style="transform: rotate(-2deg);">By Rômulo Ferreira Monteiro</p>
             </div>
-            <div class="mt-8 text-center">
-                <button type="submit" class="w-full md:w-auto bg-teal-600 text-white font-bold py-3 px-12 rounded-lg hover:bg-teal-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300">
-                    Calcular Resultados
-                </button>
-            </div>
-        </form>
-
-        <!-- Seção de Resultados (inicialmente oculta) -->
-        <section id="results-section" class="max-w-4xl mx-auto mt-12 hidden">
-            <h2 class="text-3xl font-bold text-center mb-8 text-teal-600">Seus Resultados</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Card IMC -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Índice de Massa Corporal (IMC)</h3>
-                    <p id="imc-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="imc-classification" class="mt-1 font-semibold">-</p>
-                    <p class="text-xs text-slate-500 mt-3">Fonte: OMS. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
-                </div>
-
-                <!-- Card Circunferência da Cintura -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Circunferência da Cintura</h3>
-                    <p id="waist-circumference-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="waist-circumference-classification" class="mt-1 font-semibold">-</p>
-                    <p class="text-xs text-slate-500 mt-3">Fonte: OMS. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
-                </div>
-
-                <!-- Card Relação Cintura-Quadril (RCQ) -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Relação Cintura-Quadril (RCQ)</h3>
-                    <p id="whr-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="whr-classification" class="mt-1 font-semibold">-</p>
-                    <p class="text-xs text-slate-500 mt-3">Fonte: Pitanga et al. (2011). É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
-                </div>
-
-                <!-- Card Razão Cintura-Estatura (RCE) -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Razão Cintura-Estatura (RCE)</h3>
-                    <p id="whtr-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="whtr-classification" class="mt-1 font-semibold">-</p>
-                    <p class="text-xs text-slate-500 mt-3">Fonte: M. Ashwell, P. Gunn and S. Gibson. É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
-                </div>
-                
-                <!-- Card Circunferência do Pescoço (CP) -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Circunferência do Pescoço (CP)</h3>
-                    <p id="neck-circumference-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="neck-circumference-classification" class="mt-1 font-semibold">-</p>
-                    <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
-                </div>
-
-                <!-- Card Índice de Adiposidade Corporal (IAC) -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-2">Índice de Adiposidade Corporal (IAC)</h3>
-                    <p id="bai-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="bai-classification" class="mt-1 font-semibold">-</p>
-                    <p class="text-xs text-slate-500 mt-3">Fonte: Bergman et al. (2011). É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos.</p>
-                </div>
-
-                <!-- Card Equações de Gordura Corporal -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 md:col-span-2">
-                    <h3 class="font-bold text-xl mb-2">% Gordura Corporal</h3>
-                    <p id="bfp-result" class="text-4xl font-bold text-teal-500">-</p>
-                    <p id="bfp-classification" class="mt-1 font-semibold">Válido para idades a partir de 20 anos.</p>
-                    <p class="text-xs text-slate-500 mt-3">É importante destacar que essas medidas não abrangem todos os públicos, pois são voltadas especificamente para adultos. Fonte: Woolcott et al. (2018).</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Mensagem Final de Alerta -->
-        <div class="max-w-3xl mx-auto mt-16 text-center px-4">
-            <p class="text-slate-600 font-medium bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-                É importante destacar que estes são apenas valores estimados. Sempre consulte um profissional de saúde para uma avaliação precisa. Não se preocupe com os resultados agora — eles servem apenas como um direcionamento para que você busque ajuda especializada.
-            </p>
         </div>
+    </header>
 
-    </main>
+    <!-- Botões PDF Flutuantes -->
+    <div id="pdf-floating-actions" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 no-print">
+        <button onclick="printMode('single')" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-full shadow-lg font-bold text-xs flex items-center gap-2 transition transform hover:scale-105" title="Salvar PDF da tela atual"><i class="fa-solid fa-file-pdf text-lg"></i> PDF Atual</button>
+        <button onclick="printMode('all')" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-3 rounded-full shadow-lg font-bold text-xs flex items-center gap-2 transition transform hover:scale-105" title="Salvar Relatório Completo"><i class="fa-solid fa-layer-group text-lg"></i> PDF Completo</button>
+    </div>
 
-    <footer class="text-center py-6 bg-slate-100 border-t border-slate-200 mt-12">
-        <p class="text-slate-600">Desenvolvido por Rômulo Monteiro (@romulomonteirooficial)</p>
-    </footer>
+    <!-- Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col overflow-y-auto shrink-0 z-10 shadow-md">
+            <div class="p-5 bg-teal-50 border-b border-teal-100">
+                <h2 class="font-bold text-teal-800 text-sm uppercase mb-3"><i class="fa-solid fa-user-doctor"></i> Profissional</h2>
+                <div class="space-y-2 text-sm">
+                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300" placeholder="Nome do Profissional">
+                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300" placeholder="Registro (CRN/CREF)">
+                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300" placeholder="Contato / Instagram" value="@romulof.monteiro">
+                </div>
+            </div>
+            <div class="p-5">
+                <h2 class="font-bold text-slate-700 text-sm uppercase mb-3"><i class="fa-solid fa-user"></i> Paciente</h2>
+                <form id="global-form" class="space-y-4">
+                    <input type="text" class="w-full border-b border-slate-200 py-1 text-lg font-semibold focus:outline-none placeholder-slate-300" placeholder="Nome do Paciente">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Sexo</label>
+                        <div class="flex gap-2">
+                            <label class="flex-1 cursor-pointer"><input type="radio" name="gender" value="male" class="peer sr-only" checked onchange="updateCalculations()"><div class="text-center py-2 border rounded-md peer-checked:bg-teal-600 peer-checked:text-white transition text-sm"><i class="fa-solid fa-mars"></i> Masc</div></label>
+                            <label class="flex-1 cursor-pointer"><input type="radio" name="gender" value="female" class="peer sr-only" onchange="updateCalculations()"><div class="text-center py-2 border rounded-md peer-checked:bg-pink-500 peer-checked:text-white transition text-sm"><i class="fa-solid fa-venus"></i> Fem</div></label>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Idade</label><div class="relative"><input type="number" id="age" value="30" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400">anos</span></div></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Altura</label><div class="relative"><input type="number" id="height" value="175" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400">cm</span></div></div>
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Peso Atual</label><div class="relative"><input type="number" id="weight" step="0.1" value="80" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400">kg</span></div></div>
+                </form>
+            </div>
+            <div class="mt-auto p-4 border-t border-slate-100 text-center no-print"><p class="text-xs text-slate-400">Insira medidas específicas nas abas.</p></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 bg-slate-100 relative">
+            
+            <!-- Navbar -->
+            <nav class="bg-white border-b border-slate-200 shadow-sm p-2 z-10 no-print">
+                <div class="flex flex-wrap gap-2 justify-center md:justify-start" id="nav-tabs">
+                    <button onclick="switchTab('tab-imc')" class="nav-btn active px-3 py-1.5 rounded text-sm font-semibold bg-teal-600 text-white" data-target="tab-imc">Obesidade (Lancet)</button>
+                    <button onclick="switchTab('tab-tmb')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-tmb">TMB & GET</button>
+                    <button onclick="switchTab('tab-antropo')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-antropo">Perimetria</button>
+                    <button onclick="switchTab('tab-dobras')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-dobras">Dobras</button>
+                    <button onclick="switchTab('tab-bio')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-bio">Bioimpedância</button>
+                    <button onclick="switchTab('tab-indices')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-indices">Índices</button>
+                    <button onclick="switchTab('tab-fisico')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-fisico">Físico/Postural</button>
+                    <button onclick="switchTab('tab-fotos')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-fotos">Fotos</button>
+                </div>
+            </nav>
+
+            <!-- Scroll Area -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-20" id="content-area">
+                
+                <!-- TAB 1: OBESIDADE (LANCET) -->
+                <div id="tab-imc" class="tab-content active max-w-4xl mx-auto space-y-8">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center border-b pb-3 mb-4">
+                            <h2 class="text-2xl font-bold text-teal-800">Diagnóstico de Obesidade</h2>
+                            <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded font-semibold">Lancet 2025</span>
+                        </div>
+                        <div class="mb-8">
+                            <h3 class="font-bold text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span> Confirmação do Status de Obesidade</h3>
+                            <p class="text-sm text-slate-500 mb-4 bg-yellow-50 p-3 rounded border border-yellow-100">
+                                <strong>A Confirmação do Status de Obesidade</strong> é feita através da Circunferência da cintura, Relação cintura-quadril, Relação cintura-estatura ou BIA (exceto quando IMC > 40). O IMC serve apenas como triagem.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-2 border rounded" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[10px] mt-1 text-slate-500">H >102 / M >88</p></div>
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-xs font-bold text-slate-700 uppercase mb-1">RCQ</label><div class="flex items-center justify-between"><span id="lancet-rcq-val" class="font-bold text-lg text-teal-700">--</span><input type="number" class="sync-hip w-16 p-1 text-xs border rounded" placeholder="Quadril" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div><p class="text-[10px] mt-1 text-slate-500">H >0.90 / M >0.85</p></div>
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-xs font-bold text-slate-700 uppercase mb-1">RCE</label><span id="lancet-rce-val" class="font-bold text-lg text-teal-700 block">--</span><p class="text-[10px] mt-1 text-slate-500"> > 0.50 (Todos)</p></div>
+                                <div class="p-3 border rounded bg-teal-50 border-teal-200"><label class="block text-xs font-bold text-teal-800 uppercase mb-1">% Gordura (BIA)</label><input type="number" id="lancet-bf-input" step="0.1" class="w-full p-2 border border-teal-300 rounded" placeholder="%" oninput="updateCalculations()"><p class="text-[10px] mt-1 text-teal-700">H ≥25% / M ≥32% (Excesso)</p></div>
+                            </div>
+                            <div class="flex flex-col items-center p-4 bg-teal-50 rounded-xl border border-teal-100"><span class="text-xs uppercase font-bold text-teal-600">IMC</span><span class="text-4xl font-bold text-teal-800" id="lancet-imc-val">--</span><div id="obesity-confirmation-msg" class="mt-2 text-sm font-semibold p-2 rounded w-full text-center">Aguardando dados...</div></div>
+                        </div>
+                        <div class="mb-8">
+                            <h3 class="font-bold text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span> Diferenciação Clínica</h3>
+                            <p class="text-sm text-slate-600 mb-4 font-medium">Se a obesidade foi constatada acima, marque se houver evidência de Disfunção de Órgãos ou Limitações para diferenciar <strong>Pré-Clínica</strong> de <strong>Clínica</strong>.</p>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm space-y-3">
+                                <h4 class="font-bold text-teal-800 border-b pb-1">Disfunções de Órgãos e Sistemas (Adultos)</h4>
+                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>SNC / Vias Aéreas:</strong> Pressão intracraniana, Apneia do sono.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Respiratório / Cardiovascular:</strong> Dispneia, Hipertensão, Insuficiência Cardíaca.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Metabolismo:</strong> Síndrome Metabólica (Glicose/Triglicerídeos/HDL).</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Fígado/Rim/Urinário:</strong> Esteatose, Microalbuminúria, Incontinência.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Musculoesquelético:</strong> Dor crônica, rigidez articular.</span></label>
+                                <h4 class="font-bold text-teal-800 border-b pb-1 pt-2">Limitações de Atividades (AVD)</h4>
+                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Funcionalidade:</strong> Dificuldade mobilidade ou autocuidado (banho, vestir).</span></label>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-xl text-center border-2 transition-colors mb-8" id="lancet-result-box"><p class="text-xs font-bold uppercase tracking-widest mb-2">Diagnóstico Final</p><h2 class="text-3xl md:text-5xl font-display uppercase tracking-wide mb-2" id="lancet-final-status">--</h2><p class="text-sm opacity-90" id="lancet-desc">Preencha os dados.</p></div>
+                        
+                        <!-- Tabela Comparativa Restaurada -->
+                        <div class="overflow-x-auto">
+                            <h4 class="font-bold text-sm mb-2">Resumo Comparativo</h4>
+                            <table class="w-full text-sm text-left border rounded-lg overflow-hidden">
+                                <thead class="bg-slate-100 text-slate-700">
+                                    <tr>
+                                        <th class="p-3">Característica</th>
+                                        <th class="p-3">Obesidade Pré-Clínica</th>
+                                        <th class="p-3">Obesidade Clínica</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr><td class="p-3 font-semibold">Gordura Corporal</td><td class="p-3">Confirmada como excessiva</td><td class="p-3">Confirmada como excessiva</td></tr>
+                                    <tr><td class="p-3 font-semibold">Função de Órgãos</td><td class="p-3 bg-green-50 text-green-800 rounded">Preservada <i class="fa-solid fa-link text-xs opacity-50"></i></td><td class="p-3 bg-red-50 text-red-800 rounded">Alterada/Reduzida <i class="fa-solid fa-link text-xs opacity-50"></i></td></tr>
+                                    <tr><td class="p-3 font-semibold">Sintomas/Sinais</td><td class="p-3">Ausentes ou mínimos <i class="fa-solid fa-link text-xs opacity-50"></i></td><td class="p-3">Presentes e objetivos <i class="fa-solid fa-link text-xs opacity-50"></i></td></tr>
+                                    <tr><td class="p-3 font-semibold">Objetivo Terapêutico</td><td class="p-3">Redução de risco (Profilaxia) <i class="fa-solid fa-link text-xs opacity-50"></i></td><td class="p-3">Melhora ou Remissão (Tratamento)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- TAB: TMB & GET -->
+                <div id="tab-tmb" class="tab-content max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6">TMB & GET</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div><label class="block text-xs font-bold text-slate-600 mb-1">Fórmula TMB</label><select id="tmb-formula" class="w-full p-2 border rounded bg-slate-50 focus:ring-2 focus:ring-teal-500" onchange="updateCalculations()"><option value="harris">Harris-Benedict</option><option value="mifflin" selected>Mifflin-St Jeor (Padrão)</option><option value="tinsley_ph">Tinsley (Peso e Altura)</option><option value="tinsley_mlg">Tinsley / Katch-McArdle (MLG)</option><option value="cunningham">Cunningham, 1980 (MLG)</option></select></div>
+                                <div><label class="block text-xs font-bold text-slate-600 mb-1">Nível de Atividade (Fator)</label><select id="activity-level" class="w-full p-2 border rounded bg-slate-50 focus:ring-2 focus:ring-teal-500" onchange="updateCalculations()"><option value="1.2">Sedentário (1.2)</option><option value="1.375">Levemente Ativo (1.375)</option><option value="1.55">Moderadamente Ativo (1.55)</option><option value="1.725">Muito Ativo (1.725)</option><option value="1.9">Extremamente Ativo (1.9)</option></select></div>
+                                <div id="mlg-warning" class="hidden text-xs text-orange-600 bg-orange-50 p-2 rounded">*Fórmulas de MLG requerem % de Gordura.</div>
+                            </div>
+                            <div class="flex flex-col justify-center items-center bg-teal-50 rounded-xl p-4 border border-teal-100">
+                                <p class="text-xs uppercase font-bold text-teal-600 mb-2">Gasto Energético Total (GET)</p>
+                                <div class="text-5xl font-display text-teal-800" id="get-result">--</div>
+                                <div class="text-sm text-teal-600 mb-4">kcal/dia</div>
+                                <div class="w-full border-t border-teal-200 pt-2 flex justify-between text-xs text-teal-700"><span>Basal (Repouso):</span><span class="font-bold" id="tmb-val-display">-- kcal</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- Antropometria -->
+                <div id="tab-antropo" class="tab-content max-w-4xl mx-auto">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6 border-b pb-2">Perimetria (Medidas)</h2>
+                        <div class="space-y-6">
+                            <div><h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Membros Superiores</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-xs text-slate-500">Ombros</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Dir. Relax.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Dir. Contra.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Antebraço Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Esq. Relax.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Esq. Contra.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Antebraço Esq.</label><input type="number" class="w-full p-2 border rounded"></div></div></div>
+                            <div><h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Tronco</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-xs text-slate-500">Tórax</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Abdômen</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Cintura</label><input type="number" class="sync-waist w-full p-2 border rounded" oninput="syncInputs(this, 'sync-waist'); updateCalculations()"></div></div></div>
+                            <div><h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Membros Inferiores</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-xs text-slate-500">Quadril</label><input type="number" class="sync-hip w-full p-2 border rounded" oninput="syncInputs(this, 'sync-hip'); updateCalculations()"></div><div><label class="text-xs text-slate-500">Coxa Proximal Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Coxa Medial Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Panturrilha Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Coxa Proximal Esq.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Coxa Medial Esq.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Panturrilha Esq.</label><input type="number" class="w-full p-2 border rounded"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- Dobras -->
+                <div id="tab-dobras" class="tab-content max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-4">Protocolos de Dobras</h2>
+                        <div class="mb-4"><select id="fold-protocol" class="w-full p-2 border rounded font-bold text-teal-800" onchange="updateFoldInputs()"><option value="pollock3">Pollock 3 Dobras</option><option value="guedes">Guedes (BR)</option><option value="durnin">Durnin & Womersley</option><option value="slaughter">Slaughter (Jovens)</option></select></div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4" id="fold-inputs-container">
+                            <div class="fold-input group-peito"><label class="text-xs">Peitoral</label><input type="number" id="fold-chest" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                            <div class="fold-input group-abd"><label class="text-xs">Abdominal</label><input type="number" id="fold-abs" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                            <div class="fold-input group-coxa"><label class="text-xs">Coxa</label><input type="number" id="fold-thigh" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                            <div class="fold-input group-tri"><label class="text-xs">Tríceps</label><input type="number" id="fold-tri" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                            <div class="fold-input group-supra"><label class="text-xs">Supra-ilíaca</label><input type="number" id="fold-supra" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                            <div class="fold-input group-sub"><label class="text-xs">Subescapular</label><input type="number" id="fold-sub" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                            <div class="fold-input group-bi"><label class="text-xs">Bíceps</label><input type="number" id="fold-bi" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
+                        </div>
+                        <div class="bg-slate-800 text-white p-4 rounded-xl flex justify-between items-center"><div><p class="text-xs opacity-70">Gordura Estimada</p><p class="text-3xl font-bold text-teal-400" id="folds-result">--%</p></div><div class="text-xs opacity-60 max-w-[150px]">Adipômetro calibrado. Lado direito. 3 medições.</div></div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- Bioimpedância -->
+                <div id="tab-bio" class="tab-content max-w-4xl mx-auto space-y-6">
+                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Bioimpedância</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div><label class="text-xs font-bold">% Gordura</label><input type="number" step="0.1" class="w-full p-2 border rounded" id="bio-fat" oninput="updateCalculations()"></div>
+                            <div><label class="text-xs font-bold">Massa Muscular</label><input type="number" class="w-full p-2 border rounded"></div>
+                            <div><label class="text-xs font-bold">Visceral</label><input type="number" class="w-full p-2 border rounded"></div>
+                            <div><label class="text-xs font-bold">Idade Metab.</label><input type="number" class="w-full p-2 border rounded"></div>
+                            <div><label class="text-xs font-bold">% Água</label><input type="number" class="w-full p-2 border rounded"></div>
+                            <div><label class="text-xs font-bold">Ossos (kg)</label><input type="number" class="w-full p-2 border rounded"></div>
+                        </div>
+                         <textarea class="w-full mt-4 p-2 border rounded text-sm" rows="2" placeholder="Notas..."></textarea>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- TAB: ÍNDICES (RCQ/RCE/IAC) -->
+                <div id="tab-indices" class="tab-content max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Índices Corporais</h2>
+                        <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-xl">
+                            <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cintura (cm)</label><input type="number" class="sync-waist w-full p-2 border rounded bg-white" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"></div>
+                            <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Quadril (cm)</label><input type="number" class="sync-hip w-full p-2 border rounded bg-white" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">RCQ</h3><div id="rcq-val" class="text-3xl font-bold text-teal-600 my-2">--</div><div id="rcq-class" class="text-xs font-semibold mb-3">--</div><p class="text-xs text-slate-500 leading-tight"><strong>Relação Cintura-Quadril:</strong> Avalia o risco cardiovascular e a distribuição de gordura corporal.</p></div>
+                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">RCE</h3><div id="rce-val" class="text-3xl font-bold text-teal-600 my-2">--</div><div id="rce-class" class="text-xs font-semibold mb-3">--</div><p class="text-xs text-slate-500 leading-tight"><strong>Relação Cintura-Estatura:</strong> Indicador eficaz de gordura visceral e risco metabólico.</p></div>
+                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">IAC</h3><div id="iac-val" class="text-3xl font-bold text-teal-600 my-2">--</div><div id="iac-class" class="text-xs font-semibold mb-3">Estimativa</div><p class="text-xs text-slate-500 leading-tight"><strong>Índice de Adiposidade Corporal:</strong> Estima % gordura usando quadril e altura, sem peso.</p></div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- TAB: FÍSICO/POSTURAL (TESTES DETALHADOS) -->
+                <div id="tab-fisico" class="tab-content max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-4">Postural</h2>
+                        <div class="space-y-2 text-sm mb-4">
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Cabeça anteriorizada</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Hiperlordose lombar</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Escoliose visível</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Joelho Valgo (para dentro)</span></label>
+                        </div>
+                        <textarea class="w-full p-2 border rounded text-sm bg-slate-50" placeholder="Observações posturais..."></textarea>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Testes Físicos</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border rounded-xl p-4 hover:shadow-sm">
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">1. Flexão de Braços</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="Reps"></div>
+                                <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Resistência muscular superior.</p><p><strong>Execução:</strong> Apoio solo (pés p/ homens, joelhos p/ mulheres). Flexionar até 90° e estender.</p><p><strong>Avaliação:</strong> Máximo de repetições corretas sem pausa.</p></div></details>
+                            </div>
+                            <div class="border rounded-xl p-4 hover:shadow-sm">
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">2. Abdominais (1 min)</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="Reps"></div>
+                                <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Resistência abdominal.</p><p><strong>Execução:</strong> Decúbito dorsal, joelhos 90°. Elevar tronco até tocar coxas. 1 minuto.</p><p><strong>Avaliação:</strong> Total de repetições em 60s.</p></div></details>
+                            </div>
+                            <div class="border rounded-xl p-4 hover:shadow-sm">
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">3. Sentar-e-Alcançar</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="cm"></div>
+                                <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Flexibilidade posterior.</p><p><strong>Execução:</strong> Pernas estendidas no banco. Deslizar mãos à frente. Melhor de 3.</p><p><strong>Avaliação:</strong> Distância alcançada (cm). Maior é melhor.</p></div></details>
+                            </div>
+                            <div class="border rounded-xl p-4 hover:shadow-sm">
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">4. Cooper (12 min)</h3><input type="number" id="cooper-dist" class="w-20 p-1 border rounded text-center text-sm" placeholder="Metros" oninput="updateCalculations()"></div>
+                                <p class="text-xs text-slate-500 mt-1">VO2 Máx: <span id="vo2-result" class="font-bold text-teal-600">-</span> ml/kg/min</p>
+                                <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded mt-2"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Capacidade cardiorrespiratória.</p><p><strong>Execução:</strong> Correr/caminhar máxima distância em 12 min.</p><p><strong>Avaliação:</strong> Distância em metros.</p></div></details>
+                            </div>
+                            <div class="border rounded-xl p-4 hover:shadow-sm">
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">5. Salto Vertical</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="cm"></div>
+                                <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Potência de membros inferiores.</p><p><strong>Execução:</strong> Diferença entre alcance em pé e no salto máximo.</p><p><strong>Avaliação:</strong> Altura do salto (cm).</p></div></details>
+                            </div>
+                            <div class="border rounded-xl p-4 hover:shadow-sm">
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">6. Handgrip (Força)</h3><div class="flex gap-1"><input type="number" class="w-12 p-1 border rounded text-center text-xs" placeholder="Dir"><input type="number" class="w-12 p-1 border rounded text-center text-xs" placeholder="Esq"></div></div>
+                                <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Força de preensão manual.</p><p><strong>Execução:</strong> Dinamômetro, braço ao lado, aperto máximo 3-5s.</p><p><strong>Ref (H):</strong> &lt;35 fraco, >50 excelente.</p><p><strong>Ref (M):</strong> &lt;22 fraco, >32 excelente.</p></div></details>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- TAB: FOTOS (Com opção adicionar) -->
+                <div id="tab-fotos" class="tab-content max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-bold text-teal-800">Galeria de Fotos</h2>
+                            <button onclick="addPhotoSlot()" class="bg-teal-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-teal-700 transition no-print"><i class="fa-solid fa-plus"></i> Adicionar Foto</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="photo-grid">
+                            <!-- Fotos Padrão -->
+                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400">Frente</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-front')"><img id="img-front" class="absolute inset-0 w-full h-full object-cover hidden"></div>
+                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400">Costas</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-back')"><img id="img-back" class="absolute inset-0 w-full h-full object-cover hidden"></div>
+                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400">Perfil</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-side')"><img id="img-side" class="absolute inset-0 w-full h-full object-cover hidden"></div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
+                </div>
+
+                <!-- Footer Print -->
+                <div class="print-footer hidden">
+                    <p>Avaliação gerada por Rômulo Ferreira Monteiro | Instagram: @romulof.monteiro</p>
+                </div>
+
+            </div>
+        </main>
+    </div>
 
     <script>
-        // --- LÓGICA DO FORMULÁRIO ---
-        const form = document.getElementById('assessment-form');
-        const resultsSection = document.getElementById('results-section');
+        // Função de impressão com delay para garantir renderização correta
+        function printMode(mode) {
+            document.body.classList.remove('print-single', 'print-all');
+            document.body.classList.add('print-' + mode);
+            // Delay para permitir que o navegador renderize o layout "completo"
+            setTimeout(() => {
+                window.print();
+                // Retorna ao estado normal
+                setTimeout(() => {
+                    document.body.classList.remove('print-all');
+                    document.body.classList.add('print-single');
+                }, 500);
+            }, 200);
+        }
 
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Impede o recarregamento da página
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('bg-teal-600', 'text-white'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.add('text-slate-600', 'hover:bg-teal-50'));
+            
+            document.getElementById(tabId).classList.add('active');
+            const btn = document.querySelector(`.nav-btn[data-target="${tabId}"]`);
+            if(btn) {
+                btn.classList.remove('text-slate-600', 'hover:bg-teal-50');
+                btn.classList.add('bg-teal-600', 'text-white');
+            }
+            document.getElementById('content-area').scrollTo(0,0);
+        }
 
-            // --- COLETA DE DADOS DO FORMULÁRIO ---
-            const gender = document.getElementById('gender').value;
-            const weight = parseFloat(document.getElementById('weight').value);
-            const heightCm = parseFloat(document.getElementById('height').value);
-            const age = parseInt(document.getElementById('age').value);
-            const waist = parseFloat(document.getElementById('waist').value);
-            const hip = parseFloat(document.getElementById('hip').value);
-            const abdomen = parseFloat(document.getElementById('abdomen').value);
-            const neck = parseFloat(document.getElementById('neck').value);
+        function syncInputs(src, cls) {
+            document.querySelectorAll('.'+cls).forEach(el => { if(el!==src) el.value = src.value; });
+        }
+
+        function previewImage(input, id) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(id);
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Adicionar slots de foto
+        function addPhotoSlot() {
+            const grid = document.getElementById('photo-grid');
+            const newId = 'img-extra-' + (grid.children.length + 1);
+            const div = document.createElement('div');
+            div.className = 'aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden animate-fade-in';
+            div.innerHTML = `
+                <span class="text-slate-400">Extra</span>
+                <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, '${newId}')">
+                <img id="${newId}" class="absolute inset-0 w-full h-full object-cover hidden">
+            `;
+            grid.appendChild(div);
+        }
+
+        function updateFoldInputs() {
+            const proto = document.getElementById('fold-protocol').value;
+            const allInputs = document.querySelectorAll('.fold-input');
+            allInputs.forEach(el => el.style.display = 'none');
+            const show = (cls) => document.querySelector('.group-'+cls).style.display = 'block';
+
+            if (proto === 'pollock3') {
+                const gender = document.querySelector('input[name="gender"]:checked').value;
+                if(gender === 'male') { show('peito'); show('abd'); show('coxa'); }
+                else { show('tri'); show('supra'); show('coxa'); }
+            } else if (proto === 'guedes') {
+                const gender = document.querySelector('input[name="gender"]:checked').value;
+                show('tri'); show('supra');
+                if(gender === 'male') show('abd'); else show('coxa');
+            } else if (proto === 'durnin') {
+                show('bi'); show('tri'); show('sub'); show('supra');
+            } else if (proto === 'slaughter') {
+                show('tri'); show('sub');
+            }
+            calculateFolds();
+        }
+
+        function updateCalculations() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const heightCm = parseFloat(document.getElementById('height').value) || 0;
+            const age = parseInt(document.getElementById('age').value) || 0;
             const heightM = heightCm / 100;
-
-            // --- CÁLCULOS E ATUALIZAÇÃO DA UI ---
-
-            // 1. IMC
-            if (weight > 0 && heightM > 0) {
-                const imc = weight / (heightM * heightM);
-                let imcClass = '';
-                if (imc < 18.5) imcClass = 'Baixo Peso';
-                else if (imc < 25) imcClass = 'Peso Normal';
-                else if (imc < 30) imcClass = 'Sobrepeso';
-                else if (imc < 35) imcClass = 'Obesidade Grau I';
-                else if (imc < 40) imcClass = 'Obesidade Grau II';
-                else imcClass = 'Obesidade Grau III';
-                document.getElementById('imc-result').textContent = imc.toFixed(2);
-                document.getElementById('imc-classification').textContent = imcClass;
+            const waist = parseFloat(document.querySelector('.sync-waist').value) || 0;
+            const hip = parseFloat(document.querySelector('.sync-hip').value) || 0;
+            const bfInput = parseFloat(document.getElementById('lancet-bf-input').value) || 0;
+            
+            // Índices Lancet
+            if(heightM > 0) {
+                const imc = weight / (heightM*heightM);
+                document.getElementById('lancet-imc-val').innerText = imc.toFixed(1);
+                
+                if(waist > 0) document.getElementById('lancet-rce-val').innerText = (waist/heightCm).toFixed(2);
+                if(waist > 0 && hip > 0) document.getElementById('lancet-rcq-val').innerText = (waist/hip).toFixed(2);
+                
+                runLancetLogic(imc, waist, gender, (waist/hip), (waist/heightCm), bfInput);
             } else {
-                document.getElementById('imc-result').textContent = '-';
-                document.getElementById('imc-classification').textContent = 'Dados insuficientes (peso e altura).';
+                 document.getElementById('lancet-imc-val').innerText = "--";
+                 runLancetLogic(0, 0, gender, 0, 0, 0);
             }
 
-            // 2. Circunferência da Cintura
-            if (waist > 0) {
-                let waistClass = 'Risco baixo para doenças crônicas';
-                if ((gender === 'male' && waist > 102) || (gender === 'female' && waist > 88)) {
-                    waistClass = 'Risco muito aumentado para doenças crônicas';
-                } else if ((gender === 'male' && waist > 94) || (gender === 'female' && waist > 80)) {
-                    waistClass = 'Risco aumentado (alerta) para doenças crônicas';
+            // TMB
+            const formula = document.getElementById('tmb-formula').value;
+            const activity = parseFloat(document.getElementById('activity-level').value);
+            let tmb = 0;
+            let percentFat = parseFloat(document.getElementById('folds-result').innerText) || parseFloat(document.getElementById('bio-fat').value) || 0;
+            
+            if(['tinsley_mlg', 'cunningham'].includes(formula) && percentFat === 0) {
+                document.getElementById('mlg-warning').classList.remove('hidden');
+            } else {
+                document.getElementById('mlg-warning').classList.add('hidden');
+            }
+
+            if(weight && heightCm && age) {
+                if(formula === 'mifflin') {
+                    tmb = (10*weight) + (6.25*heightCm) - (5*age) + (gender==='male'?5:-161);
+                } else if (formula === 'harris') {
+                    tmb = gender==='male' 
+                        ? 88.362 + (13.397*weight) + (4.799*heightCm) - (5.677*age)
+                        : 447.593 + (9.247*weight) + (3.098*heightCm) - (4.330*age);
+                } else if (formula === 'tinsley_ph') {
+                    tmb = (25.9 * weight) + 284; 
+                } else if (['tinsley_mlg', 'cunningham'].includes(formula)) {
+                    if(percentFat > 0) {
+                        const mlg = weight * (1 - (percentFat/100));
+                        if(formula === 'cunningham') tmb = 500 + (22 * mlg);
+                        else tmb = (24.8 * mlg) + 10;
+                    }
                 }
-                document.getElementById('waist-circumference-result').textContent = `${waist} cm`;
-                document.getElementById('waist-circumference-classification').textContent = waistClass;
-            } else {
-                document.getElementById('waist-circumference-result').textContent = '-';
-                document.getElementById('waist-circumference-classification').textContent = 'Dados insuficientes (cintura).';
-            }
 
-            // 3. Relação Cintura-Quadril (RCQ)
-            if (waist > 0 && hip > 0) {
-                const whr = waist / hip;
-                let whrClass = 'Risco baixo para doenças crônicas';
-                 if ((gender === 'male' && whr >= 0.92) || (gender === 'female' && whr >= 0.84)) {
-                   whrClass = 'Risco alto para doenças crônicas';
+                if(tmb > 0) {
+                    document.getElementById('tmb-val-display').innerText = Math.round(tmb) + " kcal";
+                    document.getElementById('get-result').innerText = Math.round(tmb * activity);
                 }
-                document.getElementById('whr-result').textContent = whr.toFixed(2);
-                document.getElementById('whr-classification').textContent = whrClass;
-            } else {
-                document.getElementById('whr-result').textContent = '-';
-                document.getElementById('whr-classification').textContent = 'Dados insuficientes (cintura e quadril).';
             }
 
-            // 4. Razão Cintura-Estatura (RCE)
-            if (waist > 0 && heightCm > 0) {
-                const whtr = waist / heightCm;
-                let whtrClass = '';
-                if (whtr < 0.5) whtrClass = 'Adiposidade central saudável / Risco baixo para doenças crônicas.';
-                else if (whtr <= 0.59) whtrClass = 'Adiposidade central elevada / Risco aumentado para doenças crônicas.';
-                else whtrClass = 'Adiposidade central alta / Risco muito elevado para doenças crônicas.';
-                document.getElementById('whtr-result').textContent = whtr.toFixed(2);
-                document.getElementById('whtr-classification').textContent = whtrClass;
-            } else {
-                document.getElementById('whtr-result').textContent = '-';
-                document.getElementById('whtr-classification').textContent = 'Dados insuficientes (cintura e altura).';
+            calculateFolds();
+            updateFoldInputs();
+            if(waist && hip) {
+                const rcq = waist/hip;
+                document.getElementById('rcq-val').innerText = rcq.toFixed(2);
+                let risk = "Baixo";
+                if((gender==='male' && rcq>=0.9) || (gender==='female' && rcq>=0.85)) risk = "Alto";
+                document.getElementById('rcq-class').innerText = risk;
             }
-
-            // 5. Circunferência do Pescoço (CP)
-            if (neck > 0) {
-                 let neckClass = 'Baixo risco para doenças crônicas';
-                 if (gender === 'male') {
-                    if (neck >= 40.1) neckClass = 'Alto risco para doenças crônicas';
-                    else if (neck >= 39.6) neckClass = 'Risco moderado para doenças crônicas';
-                 } else { // female
-                    if (neck >= 35.7) neckClass = 'Alto risco para doenças crônicas';
-                    else if (neck >= 34.7) neckClass = 'Risco moderado para doenças crônicas';
-                 }
-                 document.getElementById('neck-circumference-result').textContent = `${neck} cm`;
-                 document.getElementById('neck-circumference-classification').textContent = neckClass;
-            } else {
-                document.getElementById('neck-circumference-result').textContent = '-';
-                document.getElementById('neck-circumference-classification').textContent = 'Dados insuficientes (pescoço).';
+            if(waist && heightCm) {
+                const rce = waist/heightCm;
+                document.getElementById('rce-val').innerText = rce.toFixed(2);
+                document.getElementById('rce-class').innerText = rce >= 0.5 ? "Risco" : "Adequado";
             }
+            if(hip && heightM) document.getElementById('iac-val').innerText = ((hip/(heightM*Math.sqrt(heightM)))-18).toFixed(1);
+            
+            // Cooper
+            const dist = parseFloat(document.getElementById('cooper-dist').value) || 0;
+            if(dist > 0) document.getElementById('vo2-result').innerText = ((dist - 504.9) / 44.73).toFixed(1);
+        }
 
-            // 6. Índice de Adiposidade Corporal (IAC)
-            if (hip > 0 && heightM > 0) {
-                const bai = (hip / (heightM * Math.sqrt(heightM))) - 18;
-                let baiClass = 'Adiposidade normal.';
-                if ((gender === 'male' && bai >= 25) || (gender === 'female' && bai >= 35)) {
-                    baiClass = 'Excesso de adiposidade corporal.';
+        function calculateFolds() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const age = parseInt(document.getElementById('age').value) || 0;
+            const proto = document.getElementById('fold-protocol').value;
+            const v = (id) => parseFloat(document.getElementById(id).value) || 0;
+            
+            let bf = 0, density = 0;
+            
+            if (proto === 'pollock3') {
+                let sum = (gender === 'male') ? v('fold-chest')+v('fold-abs')+v('fold-thigh') : v('fold-tri')+v('fold-supra')+v('fold-thigh');
+                if(sum>0) {
+                    if(gender==='male') density = 1.10938 - (0.0008267*sum) + (0.0000016*sum*sum) - (0.0002574*age);
+                    else density = 1.0994921 - (0.0009929*sum) + (0.0000023*sum*sum) - (0.0001392*age);
+                    bf = ((4.95/density) - 4.50) * 100;
                 }
-                document.getElementById('bai-result').textContent = `${bai.toFixed(1)}%`;
-                document.getElementById('bai-classification').textContent = baiClass;
-            } else {
-                document.getElementById('bai-result').textContent = '-';
-                document.getElementById('bai-classification').textContent = 'Dados insuficientes (quadril e altura).';
-            }
-
-            // 7. Equações de Gordura Corporal
-            if (heightCm > 0 && waist > 0 && age >= 20) {
-                const sexValue = (gender === 'female') ? 1 : 0;
-                const gc = 64 - (20 * (heightCm / waist)) + (12 * sexValue);
-                document.getElementById('bfp-result').textContent = `${gc.toFixed(2)}%`;
-                document.getElementById('bfp-classification').textContent = `Estimativa de gordura corporal.`;
-            } else {
-                document.getElementById('bfp-result').textContent = '-';
-                let reason = 'Dados insuficientes (altura, cintura).';
-                if (!(age >= 20)) {
-                    reason = 'Cálculo válido apenas para idades a partir de 20 anos.'
+            } else if (proto === 'guedes') {
+                let sum = (gender === 'male') ? v('fold-tri')+v('fold-supra')+v('fold-abs') : v('fold-thigh')+v('fold-supra')+v('fold-tri');
+                if(sum>0) {
+                    if(gender==='male') density = 1.1714 - (0.06706 * Math.log10(sum));
+                    else density = 1.1665 - (0.07063 * Math.log10(sum));
+                    bf = ((4.95/density) - 4.50) * 100;
                 }
-                 document.getElementById('bfp-classification').textContent = reason;
+            } else if (proto === 'durnin') {
+                let sum = v('fold-bi')+v('fold-tri')+v('fold-sub')+v('fold-supra');
+                if(sum>0) {
+                    let c = (gender==='male')?1.1631:1.1599, m = (gender==='male')?0.0632:0.0717;
+                    density = c - (m * Math.log10(sum));
+                    bf = ((4.95/density) - 4.50) * 100;
+                }
+            } else if (proto === 'slaughter') {
+                let sum = v('fold-tri')+v('fold-sub');
+                if(sum>0) bf = (gender==='male') ? (0.783*sum + 1.6) : (0.546*sum + 9.7);
             }
 
+            if(bf > 0 && bf < 70) document.getElementById('folds-result').innerText = bf.toFixed(1) + "%";
+        }
 
-            // --- MOSTRAR RESULTADOS ---
-            resultsSection.classList.remove('hidden');
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
-        });
+        // --- LÓGICA LANCET ATUALIZADA ---
+        function runLancetLogic(imc, waist, gender, rcq, rce, bf) {
+            const statusText = document.getElementById('lancet-final-status');
+            const descText = document.getElementById('lancet-desc');
+            const box = document.getElementById('lancet-result-box');
+            const msg = document.getElementById('obesity-confirmation-msg');
+
+            if(!imc || imc <= 0) {
+                statusText.innerText = "Aguardando...";
+                statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-slate-400";
+                descText.innerText = "Preencha os dados (Peso e Altura).";
+                box.className = "p-6 rounded-xl text-center border-2 transition-colors mb-8 border-slate-200 bg-white";
+                msg.innerText = "Aguardando dados...";
+                msg.className = "mt-2 text-sm font-semibold p-2 rounded w-full text-center";
+                return;
+            }
+
+            let confirmed = false;
+            let waistLimit = (gender === 'male') ? 102 : 88;
+            let rcqLimit = (gender === 'male') ? 0.90 : 0.85;
+            let bfLimit = (gender === 'male') ? 25 : 32;
+
+            if(imc > 40) {
+                confirmed = true;
+                msg.innerText = "Obesidade confirmada (IMC > 40)";
+                msg.className = "mt-2 p-2 bg-red-100 text-red-800 rounded font-bold";
+            } else {
+                if ((waist >= waistLimit) || (rcq >= rcqLimit) || (rce >= 0.5) || (bf >= bfLimit)) {
+                    confirmed = true;
+                    msg.innerText = "Obesidade confirmada por Antropometria/Gordura Alterada";
+                    msg.className = "mt-2 p-2 bg-red-100 text-red-800 rounded font-bold";
+                } else {
+                    confirmed = false;
+                    msg.innerText = "Obesidade não confirmada (Falta de evidência antropométrica).";
+                    msg.className = "mt-2 p-2 bg-yellow-100 text-yellow-800 rounded font-bold";
+                }
+            }
+
+            let complications = false;
+            document.querySelectorAll('.lancet-check').forEach(c => { if(c.checked) complications = true; });
+
+            box.className = "p-6 rounded-xl text-center border-2 transition-colors mb-8";
+            
+            if (confirmed) {
+                if(complications) {
+                    statusText.innerText = "OBESIDADE CLÍNICA";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-red-600";
+                    descText.innerText = "Doença instalada. Requer tratamento terapêutico.";
+                    box.classList.add('bg-red-50', 'border-red-200');
+                } else {
+                    statusText.innerText = "OBESIDADE PRÉ-CLÍNICA";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-orange-500";
+                    descText.innerText = "Risco aumentado. Foco em prevenção de comorbidades.";
+                    box.classList.add('bg-orange-50', 'border-orange-200');
+                }
+            } else {
+                if (imc >= 30) {
+                    statusText.innerText = "OBESIDADE NÃO CONFIRMADA";
+                    statusText.className = "text-2xl md:text-4xl font-display uppercase tracking-wide mb-2 text-slate-500";
+                    descText.innerText = "IMC elevado sem confirmação de gordura excessiva.";
+                    box.classList.add('bg-slate-50', 'border-slate-200');
+                } else if (imc >= 25) {
+                    statusText.innerText = "SOBREPESO";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-yellow-600";
+                    box.classList.add('bg-yellow-50', 'border-yellow-200');
+                    descText.innerText = "Monitorar.";
+                } else if (imc >= 18.5) {
+                    statusText.innerText = "EUTROFIA";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-teal-600";
+                    box.classList.add('bg-teal-50', 'border-teal-200');
+                    descText.innerText = "Peso Normal.";
+                } else if (imc > 0) {
+                    statusText.innerText = "BAIXO PESO";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-blue-500";
+                    box.classList.add('bg-blue-50', 'border-blue-200');
+                    descText.innerText = "Abaixo da referência de IMC.";
+                } else {
+                    statusText.innerText = "Não foi possível identificar";
+                    statusText.className = "text-xl md:text-3xl font-display uppercase tracking-wide mb-2 text-slate-400";
+                    box.classList.add('bg-slate-50', 'border-slate-200');
+                    descText.innerText = "Verifique os dados inseridos.";
+                }
+            }
+        }
+
+        switchTab('tab-imc');
+        updateFoldInputs();
+        updateCalculations();
     </script>
 </body>
 </html>
