@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Avaliação Corporal - Rômulo Ferreira Monteiro</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,6 +36,10 @@
 
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Scrollbar oculta para navegação mobile */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Estilo para Accordion */
         details > summary { list-style: none; cursor: pointer; outline: none; }
@@ -71,29 +75,38 @@
                 display: block !important;
                 border-bottom: 2px solid #eee;
                 margin-bottom: 20px;
+                height: auto !important;
             }
-            header h1 { color: #0f766e !important; -webkit-text-fill-color: #0f766e !important; }
+            header h1 { color: #0f766e !important; -webkit-text-fill-color: #0f766e !important; font-size: 24pt !important; }
             
-            .flex, .flex-1, .flex-col, .h-screen { 
-                display: block !important; 
-                height: auto !important; 
-                overflow: visible !important; 
-                flex: none !important;
+            /* Ajuste de layout para impressão */
+            #layout-container {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
             }
 
             aside {
                 width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                max-height: none !important;
                 border: 1px solid #ddd !important;
                 border-radius: 8px;
                 margin-bottom: 30px !important;
                 padding: 15px !important;
                 page-break-inside: avoid;
+                overflow: visible !important;
+                position: static !important;
             }
-            aside input { border: none !important; font-weight: bold; padding: 0 !important; margin-bottom: 5px; }
+            aside input { border: none !important; font-weight: bold; padding: 0 !important; margin-bottom: 5px; background: transparent !important; }
             aside label { color: #666 !important; font-size: 10px !important; text-transform: uppercase; }
+            
+            /* Oculta o aviso de scroll da sidebar na impressão */
+            .sidebar-scroll-hint { display: none !important; }
 
-            main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
-            #content-area { padding: 0 !important; overflow: visible !important; }
+            main { margin: 0 !important; padding: 0 !important; width: 100% !important; height: auto !important; overflow: visible !important; }
+            #content-area { padding: 0 !important; overflow: visible !important; height: auto !important; }
 
             /* Força exibição de todos os conteúdos no modo Print-All */
             body.print-all .tab-content { 
@@ -147,119 +160,128 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden print-single">
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden print-single selection:bg-teal-200">
 
     <!-- Topo Centralizado -->
-    <header class="bg-teal-800 text-white shadow-lg z-20 shrink-0 relative overflow-hidden p-4">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-teal-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
-        <div class="container mx-auto flex flex-col justify-center items-center gap-2 relative z-10">
+    <header class="bg-teal-800 text-white shadow-lg z-30 shrink-0 relative overflow-hidden py-3 px-4 md:p-4 transition-all duration-300">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-teal-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div class="container mx-auto flex flex-col justify-center items-center gap-1 relative z-10">
             <div class="text-center w-full">
-                <h1 class="font-display text-4xl md:text-6xl tracking-wider mb-1 uppercase text-center w-full" style="color: #ccfbf1; text-shadow: 2px 2px 0px rgba(0,0,0,0.2);">Avaliação Corporal</h1>
-                <p class="font-signature text-xl md:text-2xl text-teal-200 opacity-90 text-center" style="transform: rotate(-2deg);">By Rômulo Ferreira Monteiro</p>
+                <h1 class="font-display text-3xl md:text-6xl tracking-wider mb-1 uppercase text-center w-full" style="color: #ccfbf1; text-shadow: 2px 2px 0px rgba(0,0,0,0.2);">Avaliação Corporal</h1>
+                <p class="font-signature text-lg md:text-2xl text-teal-200 opacity-90 text-center" style="transform: rotate(-2deg);">By Rômulo Ferreira Monteiro</p>
             </div>
         </div>
     </header>
 
     <!-- Botões PDF Flutuantes -->
-    <div id="pdf-floating-actions" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 no-print">
-        <button onclick="printMode('single')" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-full shadow-lg font-bold text-xs flex items-center gap-2 transition transform hover:scale-105" title="Salvar PDF da tela atual"><i class="fa-solid fa-file-pdf text-lg"></i> PDF Atual</button>
-        <button onclick="printMode('all')" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-3 rounded-full shadow-lg font-bold text-xs flex items-center gap-2 transition transform hover:scale-105" title="Salvar Relatório Completo"><i class="fa-solid fa-layer-group text-lg"></i> PDF Completo</button>
+    <div id="pdf-floating-actions" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2 no-print">
+        <button onclick="printMode('single')" class="bg-teal-600 hover:bg-teal-700 text-white w-12 h-12 md:w-auto md:h-auto md:px-4 md:py-3 rounded-full shadow-lg font-bold text-xs flex justify-center items-center gap-2 transition transform hover:scale-105" title="Salvar PDF da tela atual">
+            <i class="fa-solid fa-file-pdf text-lg"></i> <span class="hidden md:inline">PDF Atual</span>
+        </button>
+        <button onclick="printMode('all')" class="bg-slate-700 hover:bg-slate-800 text-white w-12 h-12 md:w-auto md:h-auto md:px-4 md:py-3 rounded-full shadow-lg font-bold text-xs flex justify-center items-center gap-2 transition transform hover:scale-105" title="Salvar Relatório Completo">
+            <i class="fa-solid fa-layer-group text-lg"></i> <span class="hidden md:inline">PDF Completo</span>
+        </button>
     </div>
 
-    <!-- Layout -->
-    <div class="flex flex-1 overflow-hidden">
+    <!-- Layout Container: Flex Column on Mobile, Row on Desktop -->
+    <div id="layout-container" class="flex flex-col md:flex-row flex-1 overflow-hidden relative">
         
-        <!-- Sidebar -->
-        <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col overflow-y-auto shrink-0 z-10 shadow-md">
-            <div class="p-5 bg-teal-50 border-b border-teal-100">
-                <h2 class="font-bold text-teal-800 text-sm uppercase mb-3"><i class="fa-solid fa-user-doctor"></i> Profissional</h2>
+        <!-- Sidebar: Collapsible/Scrollable on Mobile, Fixed on Desktop -->
+        <!-- No mobile: max-height limitada para não ocupar toda a tela, com scroll vertical -->
+        <aside class="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col shrink-0 z-20 shadow-md h-auto max-h-[35vh] md:max-h-full md:h-full overflow-y-auto">
+            <div class="p-4 md:p-5 bg-teal-50 border-b border-teal-100">
+                <h2 class="font-bold text-teal-800 text-sm uppercase mb-3 flex items-center gap-2"><i class="fa-solid fa-user-doctor"></i> Profissional</h2>
                 <div class="space-y-2 text-sm">
-                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300" placeholder="Nome do Profissional">
-                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300" placeholder="Registro profissional">
-                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300" placeholder="Contato / Instagram" >
+                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300 focus:outline-none focus:border-teal-500" placeholder="Nome do Profissional">
+                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300 focus:outline-none focus:border-teal-500" placeholder="Registro profissional">
+                    <input type="text" class="w-full bg-white border border-teal-200 rounded px-2 py-1 placeholder-teal-300 focus:outline-none focus:border-teal-500" placeholder="Contato / Instagram" >
                 </div>
             </div>
-            <div class="p-5">
-                <h2 class="font-bold text-slate-700 text-sm uppercase mb-3"><i class="fa-solid fa-user"></i> Paciente</h2>
+            <div class="p-4 md:p-5">
+                <h2 class="font-bold text-slate-700 text-sm uppercase mb-3 flex items-center gap-2"><i class="fa-solid fa-user"></i> Paciente</h2>
                 <form id="global-form" class="space-y-4">
-                    <input type="text" class="w-full border-b border-slate-200 py-1 text-lg font-semibold focus:outline-none placeholder-slate-300" placeholder="Nome do Paciente">
+                    <input type="text" class="w-full border-b border-slate-200 py-1 text-lg font-semibold focus:outline-none focus:border-teal-500 placeholder-slate-300 transition-colors" placeholder="Nome do Paciente">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Sexo</label>
                         <div class="flex gap-2">
-                            <label class="flex-1 cursor-pointer"><input type="radio" name="gender" value="male" class="peer sr-only" checked onchange="updateCalculations()"><div class="text-center py-2 border rounded-md peer-checked:bg-teal-600 peer-checked:text-white transition text-sm"><i class="fa-solid fa-mars"></i> Masc</div></label>
-                            <label class="flex-1 cursor-pointer"><input type="radio" name="gender" value="female" class="peer sr-only" onchange="updateCalculations()"><div class="text-center py-2 border rounded-md peer-checked:bg-pink-500 peer-checked:text-white transition text-sm"><i class="fa-solid fa-venus"></i> Fem</div></label>
+                            <label class="flex-1 cursor-pointer select-none"><input type="radio" name="gender" value="male" class="peer sr-only" checked onchange="updateCalculations()"><div class="text-center py-2 border rounded-md peer-checked:bg-teal-600 peer-checked:text-white peer-checked:border-teal-600 transition text-sm flex items-center justify-center gap-2 hover:bg-slate-50"><i class="fa-solid fa-mars"></i> Masc</div></label>
+                            <label class="flex-1 cursor-pointer select-none"><input type="radio" name="gender" value="female" class="peer sr-only" onchange="updateCalculations()"><div class="text-center py-2 border rounded-md peer-checked:bg-pink-500 peer-checked:text-white peer-checked:border-pink-500 transition text-sm flex items-center justify-center gap-2 hover:bg-slate-50"><i class="fa-solid fa-venus"></i> Fem</div></label>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Idade</label><div class="relative"><input type="number" id="age" value="30" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400">anos</span></div></div>
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Altura</label><div class="relative"><input type="number" id="height" value="175" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400">cm</span></div></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Idade</label><div class="relative"><input type="number" id="age" value="30" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-500" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400 pointer-events-none">anos</span></div></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Altura</label><div class="relative"><input type="number" id="height" value="175" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-500" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400 pointer-events-none">cm</span></div></div>
                     </div>
-                    <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Peso Atual</label><div class="relative"><input type="number" id="weight" step="0.1" value="80" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400">kg</span></div></div>
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Peso Atual</label><div class="relative"><input type="number" id="weight" step="0.1" value="80" class="w-full pl-3 pr-8 py-2 border rounded-md transition bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-500" oninput="updateCalculations()"><span class="absolute right-2 top-2 text-xs text-slate-400 pointer-events-none">kg</span></div></div>
                 </form>
             </div>
-            <div class="mt-auto p-4 border-t border-slate-100 text-center no-print"><p class="text-xs text-slate-400">Insira medidas específicas nas abas.</p></div>
+            <!-- Dica visual de scroll no mobile -->
+            <div class="sidebar-scroll-hint md:hidden w-full text-center py-1 bg-gradient-to-t from-slate-100 to-transparent absolute bottom-0 pointer-events-none">
+                <i class="fa-solid fa-chevron-down text-slate-300 text-xs animate-bounce"></i>
+            </div>
+            <div class="mt-auto p-4 border-t border-slate-100 text-center no-print hidden md:block"><p class="text-xs text-slate-400">Insira medidas específicas nas abas.</p></div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col min-w-0 bg-slate-100 relative">
+        <main class="flex-1 flex flex-col min-w-0 bg-slate-100 relative overflow-hidden">
             
-            <!-- Navbar -->
-            <nav class="bg-white border-b border-slate-200 shadow-sm p-2 z-10 no-print">
-                <div class="flex flex-wrap gap-2 justify-center md:justify-start" id="nav-tabs">
-                    <button onclick="switchTab('tab-imc')" class="nav-btn active px-3 py-1.5 rounded text-sm font-semibold bg-teal-600 text-white" data-target="tab-imc">Obesidade (Lancet)</button>
-                    <button onclick="switchTab('tab-tmb')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-tmb">TMB & GET</button>
-                    <button onclick="switchTab('tab-antropo')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-antropo">Perimetria</button>
-                    <button onclick="switchTab('tab-dobras')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-dobras">Dobras</button>
-                    <button onclick="switchTab('tab-bio')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-bio">Bioimpedância</button>
-                    <button onclick="switchTab('tab-indices')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-indices">Índices</button>
-                    <button onclick="switchTab('tab-fisico')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-fisico">Físico/Postural</button>
-                    <button onclick="switchTab('tab-fotos')" class="nav-btn px-3 py-1.5 rounded text-sm font-semibold text-slate-600 hover:bg-teal-50" data-target="tab-fotos">Fotos</button>
+            <!-- Navbar Scrollable Horizontal -->
+            <nav class="bg-white border-b border-slate-200 shadow-sm p-2 z-10 no-print shrink-0">
+                <div class="flex flex-nowrap overflow-x-auto no-scrollbar gap-2 md:gap-2 pb-1 md:pb-0 px-1 md:justify-start" id="nav-tabs">
+                    <button onclick="switchTab('tab-imc')" class="nav-btn whitespace-nowrap flex-shrink-0 active px-3 py-1.5 rounded-full md:rounded text-sm font-semibold bg-teal-600 text-white transition-colors" data-target="tab-imc">Obesidade (Lancet)</button>
+                    <button onclick="switchTab('tab-tmb')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-tmb">TMB & GET</button>
+                    <button onclick="switchTab('tab-antropo')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-antropo">Perimetria</button>
+                    <button onclick="switchTab('tab-dobras')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-dobras">Dobras</button>
+                    <button onclick="switchTab('tab-bio')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-bio">Bioimpedância</button>
+                    <button onclick="switchTab('tab-indices')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-indices">Índices</button>
+                    <button onclick="switchTab('tab-fisico')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-fisico">Físico/Postural</button>
+                    <button onclick="switchTab('tab-fotos')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-fotos">Fotos</button>
                 </div>
             </nav>
 
             <!-- Scroll Area -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-20" id="content-area">
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8" id="content-area">
                 
                 <!-- TAB 1: OBESIDADE (LANCET) -->
-                <div id="tab-imc" class="tab-content active max-w-4xl mx-auto space-y-8">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                        <div class="flex justify-between items-center border-b pb-3 mb-4">
-                            <h2 class="text-2xl font-bold text-teal-800">Diagnóstico de Obesidade</h2>
-                            <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded font-semibold">Lancet 2025</span>
+                <div id="tab-imc" class="tab-content active max-w-4xl mx-auto space-y-6 md:space-y-8">
+                    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-3 mb-4 gap-2">
+                            <h2 class="text-xl md:text-2xl font-bold text-teal-800">Diagnóstico de Obesidade</h2>
+                            <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded font-semibold whitespace-nowrap">Lancet 2025</span>
                         </div>
-                        <div class="mb-8">
-                            <h3 class="font-bold text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span> Confirmação do Status de Obesidade</h3>
-                            <p class="text-sm text-slate-500 mb-4 bg-yellow-50 p-3 rounded border border-yellow-100">
-                                <strong>A Confirmação do Status de Obesidade</strong> é feita através da Circunferência da cintura, Relação cintura-quadril, Relação cintura-estatura ou BIA (exceto quando IMC > 40). O IMC serve apenas como triagem.
+                        <div class="mb-6 md:mb-8">
+                            <h3 class="font-bold text-base md:text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0">1</span> Confirmação do Status</h3>
+                            <p class="text-xs md:text-sm text-slate-500 mb-4 bg-yellow-50 p-3 rounded border border-yellow-100 leading-relaxed">
+                                <strong>A Confirmação do Status de Obesidade</strong> é feita através da Circunferência da cintura, Relação cintura-quadril, Relação cintura-estatura ou BIA (exceto quando IMC > 40).
                             </p>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                                <div class="p-3 border rounded bg-slate-50"><label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-2 border rounded" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[10px] mt-1 text-slate-500">H >102 / M >88</p></div>
-                                <div class="p-3 border rounded bg-slate-50"><label class="block text-xs font-bold text-slate-700 uppercase mb-1">RCQ</label><div class="flex items-center justify-between"><span id="lancet-rcq-val" class="font-bold text-lg text-teal-700">--</span><input type="number" class="sync-hip w-16 p-1 text-xs border rounded" placeholder="Quadril" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div><p class="text-[10px] mt-1 text-slate-500">H >0.90 / M >0.85</p></div>
-                                <div class="p-3 border rounded bg-slate-50"><label class="block text-xs font-bold text-slate-700 uppercase mb-1">RCE</label><span id="lancet-rce-val" class="font-bold text-lg text-teal-700 block">--</span><p class="text-[10px] mt-1 text-slate-500"> > 0.50 (Todos)</p></div>
-                                <div class="p-3 border rounded bg-teal-50 border-teal-200"><label class="block text-xs font-bold text-teal-800 uppercase mb-1">% Gordura (BIA)</label><input type="number" id="lancet-bf-input" step="0.1" class="w-full p-2 border border-teal-300 rounded" placeholder="%" oninput="updateCalculations()"><p class="text-[10px] mt-1 text-teal-700">H ≥25% / M ≥32% (Excesso)</p></div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-1.5 md:p-2 border rounded text-sm" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >102 / M >88</p></div>
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCQ</label><div class="flex items-center justify-between gap-1"><span id="lancet-rcq-val" class="font-bold text-base md:text-lg text-teal-700">--</span><input type="number" class="sync-hip w-full max-w-[60px] p-1 text-xs border rounded" placeholder="Quadril" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >0.90 / M >0.85</p></div>
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCE</label><span id="lancet-rce-val" class="font-bold text-base md:text-lg text-teal-700 block">--</span><p class="text-[9px] md:text-[10px] mt-1 text-slate-500"> > 0.50 (Todos)</p></div>
+                                <div class="p-3 border rounded bg-teal-50 border-teal-200"><label class="block text-[10px] md:text-xs font-bold text-teal-800 uppercase mb-1">% Gordura (BIA)</label><input type="number" id="lancet-bf-input" step="0.1" class="w-full p-1.5 md:p-2 border border-teal-300 rounded text-sm" placeholder="%" oninput="updateCalculations()"><p class="text-[9px] md:text-[10px] mt-1 text-teal-700">H ≥25% / M ≥32%</p></div>
                             </div>
-                            <div class="flex flex-col items-center p-4 bg-teal-50 rounded-xl border border-teal-100"><span class="text-xs uppercase font-bold text-teal-600">IMC</span><span class="text-4xl font-bold text-teal-800" id="lancet-imc-val">--</span><div id="obesity-confirmation-msg" class="mt-2 text-sm font-semibold p-2 rounded w-full text-center">Aguardando dados...</div></div>
+                            <div class="flex flex-col items-center p-4 bg-teal-50 rounded-xl border border-teal-100"><span class="text-xs uppercase font-bold text-teal-600">IMC</span><span class="text-4xl font-bold text-teal-800" id="lancet-imc-val">--</span><div id="obesity-confirmation-msg" class="mt-2 text-xs md:text-sm font-semibold p-2 rounded w-full text-center">Aguardando dados...</div></div>
                         </div>
-                        <div class="mb-8">
-                            <h3 class="font-bold text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span> Diferenciação Clínica</h3>
-                            <p class="text-sm text-slate-600 mb-4 font-medium">Se a obesidade foi constatada acima, marque se houver evidência de Disfunção de Órgãos ou Limitações para diferenciar <strong>Pré-Clínica</strong> de <strong>Clínica</strong>.</p>
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm space-y-3">
-                                <h4 class="font-bold text-teal-800 border-b pb-1">Disfunções de Órgãos e Sistemas (Adultos)</h4>
-                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>SNC / Vias Aéreas:</strong> Pressão intracraniana, Apneia do sono.</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Respiratório / Cardiovascular:</strong> Dispneia, Hipertensão, Insuficiência Cardíaca.</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Metabolismo:</strong> Síndrome Metabólica (Glicose/Triglicerídeos/HDL).</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Fígado/Rim/Urinário:</strong> Esteatose, Microalbuminúria, Incontinência.</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Musculoesquelético:</strong> Dor crônica, rigidez articular.</span></label>
+                        <div class="mb-6 md:mb-8">
+                            <h3 class="font-bold text-base md:text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0">2</span> Diferenciação Clínica</h3>
+                            <p class="text-xs md:text-sm text-slate-600 mb-4 font-medium">Se a obesidade foi constatada acima, marque se houver evidência de Disfunção de Órgãos ou Limitações.</p>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs md:text-sm space-y-3">
+                                <h4 class="font-bold text-teal-800 border-b pb-1">Disfunções de Órgãos e Sistemas</h4>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>SNC / Vias Aéreas:</strong> Pressão intracraniana, Apneia do sono.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Respiratório / Cardiovascular:</strong> Dispneia, Hipertensão, IC.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Metabolismo:</strong> Síndrome Metabólica (Glicose/Triglicerídeos).</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Fígado/Rim/Urinário:</strong> Esteatose, Microalbuminúria.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Musculoesquelético:</strong> Dor crônica, rigidez.</span></label>
                                 <h4 class="font-bold text-teal-800 border-b pb-1 pt-2">Limitações de Atividades (AVD)</h4>
-                                <label class="flex items-start gap-2 cursor-pointer"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Funcionalidade:</strong> Dificuldade mobilidade ou autocuidado (banho, vestir).</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Funcionalidade:</strong> Dificuldade mobilidade ou autocuidado.</span></label>
                             </div>
                         </div>
-                        <div class="p-6 rounded-xl text-center border-2 transition-colors mb-8" id="lancet-result-box"><p class="text-xs font-bold uppercase tracking-widest mb-2">Diagnóstico Final</p><h2 class="text-3xl md:text-5xl font-display uppercase tracking-wide mb-2" id="lancet-final-status">--</h2><p class="text-sm opacity-90" id="lancet-desc">Preencha os dados.</p></div>
+                        <div class="p-6 rounded-xl text-center border-2 transition-colors mb-8" id="lancet-result-box"><p class="text-xs font-bold uppercase tracking-widest mb-2">Diagnóstico Final</p><h2 class="text-2xl md:text-5xl font-display uppercase tracking-wide mb-2 break-words" id="lancet-final-status">--</h2><p class="text-sm opacity-90" id="lancet-desc">Preencha os dados.</p></div>
                         
                         <!-- Tabela Comparativa Restaurada -->
                         <div class="overflow-x-auto">
                             <h4 class="font-bold text-sm mb-2">Resumo Comparativo</h4>
-                            <table class="w-full text-sm text-left border rounded-lg overflow-hidden">
+                            <table class="w-full text-xs md:text-sm text-left border rounded-lg overflow-hidden min-w-[500px]">
                                 <thead class="bg-slate-100 text-slate-700">
                                     <tr>
                                         <th class="p-3">Característica</th>
@@ -298,8 +320,8 @@
 
                 <!-- TAB: TMB & GET -->
                 <div id="tab-tmb" class="tab-content max-w-4xl mx-auto space-y-6">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-6">TMB & GET</h2>
+                    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">TMB & GET</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-4">
                                 <div><label class="block text-xs font-bold text-slate-600 mb-1">Fórmula TMB</label><select id="tmb-formula" class="w-full p-2 border rounded bg-slate-50 focus:ring-2 focus:ring-teal-500" onchange="updateCalculations()"><option value="harris">Harris-Benedict</option><option value="mifflin" selected>Mifflin-St Jeor (Padrão)</option><option value="tinsley_ph">Tinsley (Peso e Altura)</option><option value="tinsley_mlg">Tinsley / Katch-McArdle (MLG)</option><option value="cunningham">Cunningham, 1980 (MLG)</option></select></div>
@@ -319,12 +341,41 @@
 
                 <!-- Antropometria -->
                 <div id="tab-antropo" class="tab-content max-w-4xl mx-auto">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-6 border-b pb-2">Perimetria (Medidas)</h2>
+                    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6 border-b pb-2">Perimetria (Medidas)</h2>
                         <div class="space-y-6">
-                            <div><h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Membros Superiores</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-xs text-slate-500">Ombros</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Dir. Relax.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Dir. Contra.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Antebraço Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Esq. Relax.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Braço Esq. Contra.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Antebraço Esq.</label><input type="number" class="w-full p-2 border rounded"></div></div></div>
-                            <div><h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Tronco</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-xs text-slate-500">Tórax</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Abdômen</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Cintura</label><input type="number" class="sync-waist w-full p-2 border rounded" oninput="syncInputs(this, 'sync-waist'); updateCalculations()"></div></div></div>
-                            <div><h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Membros Inferiores</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-xs text-slate-500">Quadril</label><input type="number" class="sync-hip w-full p-2 border rounded" oninput="syncInputs(this, 'sync-hip'); updateCalculations()"></div><div><label class="text-xs text-slate-500">Coxa Proximal Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Coxa Medial Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Panturrilha Dir.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Coxa Proximal Esq.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Coxa Medial Esq.</label><input type="number" class="w-full p-2 border rounded"></div><div><label class="text-xs text-slate-500">Panturrilha Esq.</label><input type="number" class="w-full p-2 border rounded"></div></div></div>
+                            <div>
+                                <h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Membros Superiores</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Ombros</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Braço Dir. Relax.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Braço Dir. Contra.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Antebraço Dir.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Braço Esq. Relax.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Braço Esq. Contra.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Antebraço Esq.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Tronco</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Tórax</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Abdômen</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div class="col-span-2 md:col-span-1"><label class="text-[10px] md:text-xs text-slate-500">Cintura</label><input type="number" class="sync-waist w-full p-2 border rounded bg-slate-50 font-semibold" oninput="syncInputs(this, 'sync-waist'); updateCalculations()"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-display text-lg text-teal-700 uppercase mb-2 border-b border-teal-100">Membros Inferiores</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                                    <div class="col-span-2 md:col-span-1"><label class="text-[10px] md:text-xs text-slate-500">Quadril</label><input type="number" class="sync-hip w-full p-2 border rounded bg-slate-50 font-semibold" oninput="syncInputs(this, 'sync-hip'); updateCalculations()"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Coxa Prox. Dir.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Coxa Med. Dir.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Panturrilha Dir.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Coxa Prox. Esq.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Coxa Med. Esq.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                    <div><label class="text-[10px] md:text-xs text-slate-500">Panturrilha Esq.</label><input type="number" class="w-full p-2 border rounded"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
@@ -332,8 +383,8 @@
 
                 <!-- Dobras -->
                 <div id="tab-dobras" class="tab-content max-w-4xl mx-auto space-y-6">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-4">Protocolos de Dobras</h2>
+                    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-4">Protocolos de Dobras</h2>
                         <div class="mb-4"><select id="fold-protocol" class="w-full p-2 border rounded font-bold text-teal-800" onchange="updateFoldInputs()"><option value="pollock3">Pollock 3 Dobras</option><option value="guedes">Guedes (BR)</option><option value="durnin">Durnin & Womersley</option><option value="slaughter">Slaughter (Jovens)</option></select></div>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4" id="fold-inputs-container">
                             <div class="fold-input group-peito"><label class="text-xs">Peitoral</label><input type="number" id="fold-chest" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
@@ -344,15 +395,15 @@
                             <div class="fold-input group-sub"><label class="text-xs">Subescapular</label><input type="number" id="fold-sub" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
                             <div class="fold-input group-bi"><label class="text-xs">Bíceps</label><input type="number" id="fold-bi" class="w-full p-2 border rounded" oninput="calculateFolds()"></div>
                         </div>
-                        <div class="bg-slate-800 text-white p-4 rounded-xl flex justify-between items-center"><div><p class="text-xs opacity-70">Gordura Estimada</p><p class="text-3xl font-bold text-teal-400" id="folds-result">--%</p></div><div class="text-xs opacity-60 max-w-[150px]">Adipômetro calibrado. Lado direito. 3 medições.</div></div>
+                        <div class="bg-slate-800 text-white p-4 rounded-xl flex justify-between items-center"><div><p class="text-xs opacity-70">Gordura Estimada</p><p class="text-3xl font-bold text-teal-400" id="folds-result">--%</p></div><div class="text-xs opacity-60 max-w-[150px] text-right">Adipômetro calibrado. 3 medições.</div></div>
                     </div>
                     <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
                 </div>
 
                 <!-- Bioimpedância -->
                 <div id="tab-bio" class="tab-content max-w-4xl mx-auto space-y-6">
-                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Bioimpedância</h2>
+                     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">Bioimpedância</h2>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div><label class="text-xs font-bold">% Gordura</label><input type="number" step="0.1" class="w-full p-2 border rounded" id="bio-fat" oninput="updateCalculations()"></div>
                             <div><label class="text-xs font-bold">Massa Muscular</label><input type="number" class="w-full p-2 border rounded"></div>
@@ -368,8 +419,8 @@
 
                 <!-- TAB: ÍNDICES (RCQ/RCE/IAC) -->
                 <div id="tab-indices" class="tab-content max-w-4xl mx-auto space-y-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Índices Corporais</h2>
+                    <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">Índices Corporais</h2>
                         <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-xl">
                             <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cintura (cm)</label><input type="number" class="sync-waist w-full p-2 border rounded bg-white" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"></div>
                             <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Quadril (cm)</label><input type="number" class="sync-hip w-full p-2 border rounded bg-white" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div>
@@ -385,8 +436,8 @@
 
                 <!-- TAB: FÍSICO/POSTURAL (TESTES DETALHADOS) -->
                 <div id="tab-fisico" class="tab-content max-w-4xl mx-auto space-y-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-4">Postural</h2>
+                    <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-4">Postural</h2>
                         <div class="space-y-2 text-sm mb-4">
                             <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Cabeça anteriorizada</span></label>
                             <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Hiperlordose lombar</span></label>
@@ -396,9 +447,9 @@
                         <textarea class="w-full p-2 border rounded text-sm bg-slate-50" placeholder="Observações posturais..."></textarea>
                     </div>
 
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Testes Físicos</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">Testes Físicos</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div class="border rounded-xl p-4 hover:shadow-sm">
                                 <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">1. Flexão de Braços</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="Reps"></div>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Resistência muscular superior.</p><p><strong>Execução:</strong> Apoio solo (pés p/ homens, joelhos p/ mulheres). Flexionar até 90° e estender.</p><p><strong>Avaliação:</strong> Máximo de repetições corretas sem pausa.</p></div></details>
@@ -431,17 +482,17 @@
 
                 <!-- TAB: FOTOS (Com opção adicionar) -->
                 <div id="tab-fotos" class="tab-content max-w-4xl mx-auto space-y-6">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold text-teal-800">Galeria de Fotos</h2>
-                            <button onclick="addPhotoSlot()" class="bg-teal-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-teal-700 transition no-print"><i class="fa-solid fa-plus"></i> Adicionar Foto</button>
+                            <h2 class="text-xl md:text-2xl font-bold text-teal-800">Galeria de Fotos</h2>
+                            <button onclick="addPhotoSlot()" class="bg-teal-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-teal-700 transition no-print"><i class="fa-solid fa-plus"></i> <span class="hidden md:inline">Adicionar Foto</span><span class="md:hidden">+</span></button>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="photo-grid">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" id="photo-grid">
                             <!-- Fotos Padrão -->
-                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400">Frente</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-front')"><img id="img-front" class="absolute inset-0 w-full h-full object-cover hidden"></div>
-                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400">Costas</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-back')"><img id="img-back" class="absolute inset-0 w-full h-full object-cover hidden"></div>
-                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400">Perfil</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-side')"><img id="img-side" class="absolute inset-0 w-full h-full object-cover hidden"></div>
+                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400 text-sm">Frente</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-front')"><img id="img-front" class="absolute inset-0 w-full h-full object-cover hidden"></div>
+                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400 text-sm">Costas</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-back')"><img id="img-back" class="absolute inset-0 w-full h-full object-cover hidden"></div>
+                            <div class="aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden"><span class="text-slate-400 text-sm">Perfil</span><input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, 'img-side')"><img id="img-side" class="absolute inset-0 w-full h-full object-cover hidden"></div>
                         </div>
                     </div>
                     <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
@@ -482,6 +533,9 @@
             if(btn) {
                 btn.classList.remove('text-slate-600', 'hover:bg-teal-50');
                 btn.classList.add('bg-teal-600', 'text-white');
+                
+                // Scroll para colocar o botão ativo visível no mobile
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
             document.getElementById('content-area').scrollTo(0,0);
         }
@@ -509,7 +563,7 @@
             const div = document.createElement('div');
             div.className = 'aspect-[3/4] bg-slate-100 border-2 border-dashed rounded relative flex items-center justify-center overflow-hidden animate-fade-in';
             div.innerHTML = `
-                <span class="text-slate-400">Extra</span>
+                <span class="text-slate-400 text-sm">Extra</span>
                 <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this, '${newId}')">
                 <img id="${newId}" class="absolute inset-0 w-full h-full object-cover hidden">
             `;
@@ -664,11 +718,11 @@
 
             if(!imc || imc <= 0) {
                 statusText.innerText = "Aguardando...";
-                statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-slate-400";
-                descText.innerText = "Preencha os dados (Peso e Altura).";
+                statusText.className = "text-xl md:text-5xl font-display uppercase tracking-wide mb-2 text-slate-400 break-words";
+                descText.innerText = "Preencha os dados.";
                 box.className = "p-6 rounded-xl text-center border-2 transition-colors mb-8 border-slate-200 bg-white";
                 msg.innerText = "Aguardando dados...";
-                msg.className = "mt-2 text-sm font-semibold p-2 rounded w-full text-center";
+                msg.className = "mt-2 text-xs md:text-sm font-semibold p-2 rounded w-full text-center";
                 return;
             }
 
@@ -684,11 +738,11 @@
             } else {
                 if ((waist >= waistLimit) || (rcq >= rcqLimit) || (rce >= 0.5) || (bf >= bfLimit)) {
                     confirmed = true;
-                    msg.innerText = "Obesidade confirmada por Antropometria/Gordura Alterada";
+                    msg.innerText = "Obesidade confirmada por Antropometria";
                     msg.className = "mt-2 p-2 bg-red-100 text-red-800 rounded font-bold";
                 } else {
                     confirmed = false;
-                    msg.innerText = "Obesidade não confirmada (Falta de evidência antropométrica).";
+                    msg.innerText = "Obesidade não confirmada";
                     msg.className = "mt-2 p-2 bg-yellow-100 text-yellow-800 rounded font-bold";
                 }
             }
@@ -701,20 +755,20 @@
             if (confirmed) {
                 if(complications) {
                     statusText.innerText = "OBESIDADE CLÍNICA";
-                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-red-600";
-                    descText.innerText = "Doença instalada. Requer tratamento terapêutico.";
+                    statusText.className = "text-2xl md:text-5xl font-display uppercase tracking-wide mb-2 text-red-600 break-words";
+                    descText.innerText = "Doença instalada. Requer tratamento.";
                     box.classList.add('bg-red-50', 'border-red-200');
                 } else {
                     statusText.innerText = "OBESIDADE PRÉ-CLÍNICA";
-                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-orange-500";
-                    descText.innerText = "Risco aumentado. Foco em prevenção de comorbidades.";
+                    statusText.className = "text-2xl md:text-5xl font-display uppercase tracking-wide mb-2 text-orange-500 break-words";
+                    descText.innerText = "Risco aumentado. Prevenção.";
                     box.classList.add('bg-orange-50', 'border-orange-200');
                 }
             } else {
                 if (imc >= 30) {
                     statusText.innerText = "OBESIDADE NÃO CONFIRMADA";
-                    statusText.className = "text-2xl md:text-4xl font-display uppercase tracking-wide mb-2 text-slate-500";
-                    descText.innerText = "IMC elevado sem confirmação de gordura excessiva.";
+                    statusText.className = "text-xl md:text-4xl font-display uppercase tracking-wide mb-2 text-slate-500 break-words";
+                    descText.innerText = "IMC elevado sem excesso de gordura.";
                     box.classList.add('bg-slate-50', 'border-slate-200');
                 } else if (imc >= 25) {
                     statusText.innerText = "SOBREPESO";
@@ -730,12 +784,12 @@
                     statusText.innerText = "BAIXO PESO";
                     statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-blue-500";
                     box.classList.add('bg-blue-50', 'border-blue-200');
-                    descText.innerText = "Abaixo da referência de IMC.";
+                    descText.innerText = "Abaixo da referência.";
                 } else {
-                    statusText.innerText = "Não foi possível identificar";
+                    statusText.innerText = "Não identificado";
                     statusText.className = "text-xl md:text-3xl font-display uppercase tracking-wide mb-2 text-slate-400";
                     box.classList.add('bg-slate-50', 'border-slate-200');
-                    descText.innerText = "Verifique os dados inseridos.";
+                    descText.innerText = "Verifique os dados.";
                 }
             }
         }
@@ -746,4 +800,3 @@
     </script>
 </body>
 </html>
-
