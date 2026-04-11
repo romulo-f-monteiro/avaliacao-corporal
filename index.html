@@ -226,7 +226,7 @@
         <main class="flex-1 flex flex-col min-w-0 bg-slate-100 relative overflow-hidden">
             
             <!-- Navbar Scrollable Horizontal -->
-            <nav class="bg-white border-b border-slate-200 shadow-sm p-2 z-10 no-print shrink-0">
+            <nav class="bg-white border-b border-slate-200 shadow-sm p-2 z-10 no-print shrink-0 w-full overflow-hidden">
                 <div class="flex flex-nowrap overflow-x-auto no-scrollbar gap-2 md:gap-2 pb-1 md:pb-0 px-1 md:justify-start" id="nav-tabs">
                     <button onclick="switchTab('tab-imc')" class="nav-btn whitespace-nowrap flex-shrink-0 active px-3 py-1.5 rounded-full md:rounded text-sm font-semibold bg-teal-600 text-white transition-colors" data-target="tab-imc">Obesidade (Rubino et al.,2025)</button>
                     <button onclick="switchTab('tab-tmb')" class="nav-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-full md:rounded text-sm font-semibold text-slate-600 hover:bg-teal-50 transition-colors" data-target="tab-tmb">TMB & GET</button>
@@ -240,14 +240,14 @@
             </nav>
 
             <!-- Scroll Area -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8" id="content-area">
+            <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-20 md:pb-8 w-full" id="content-area">
                 
                 <!-- TAB 1: OBESIDADE (LANCET) -->
-                <div id="tab-imc" class="tab-content active max-w-4xl mx-auto space-y-6 md:space-y-8">
+                <div id="tab-imc" class="tab-content active max-w-4xl mx-auto space-y-6 md:space-y-8 w-full">
                     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-3 mb-4 gap-2">
                             <h2 class="text-xl md:text-2xl font-bold text-teal-800">Diagnóstico de Obesidade</h2>
-                            <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded font-semibold whitespace-nowrap">Lancet 2025</span>
+                            <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded font-semibold whitespace-nowrap">Rubino et al., 2025</span>
                         </div>
                         <div class="mb-6 md:mb-8">
                             <h3 class="font-bold text-base md:text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0">1</span> Confirmação do Status</h3>
@@ -258,7 +258,7 @@
                                 <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-1.5 md:p-2 border rounded text-sm" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >102 / M >88</p></div>
                                 <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCQ</label><div class="flex items-center justify-between gap-1"><span id="lancet-rcq-val" class="font-bold text-base md:text-lg text-teal-700">--</span><input type="number" class="sync-hip w-full max-w-[60px] p-1 text-xs border rounded" placeholder="Quadril" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >0.90 / M >0.85</p></div>
                                 <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCE</label><span id="lancet-rce-val" class="font-bold text-base md:text-lg text-teal-700 block">--</span><p class="text-[9px] md:text-[10px] mt-1 text-slate-500"> > 0.50 (Todos)</p></div>
-                                <div class="p-3 border rounded bg-teal-50 border-teal-200"><label class="block text-[10px] md:text-xs font-bold text-teal-800 uppercase mb-1">% Gordura (BIA)</label><input type="number" id="lancet-bf-input" step="0.1" class="w-full p-1.5 md:p-2 border border-teal-300 rounded text-sm" placeholder="%" oninput="updateCalculations()"><p class="text-[9px] md:text-[10px] mt-1 text-teal-700">H ≥25% / M ≥32%</p></div>
+                                <div class="p-3 border rounded bg-teal-50 border-teal-200"><label class="block text-[10px] md:text-xs font-bold text-teal-800 uppercase mb-1">% Gordura (método direto)</label><input type="number" id="lancet-bf-input" step="0.1" class="w-full p-1.5 md:p-2 border border-teal-300 rounded text-sm" placeholder="%" oninput="updateCalculations()"><p class="text-[9px] md:text-[10px] mt-1 text-teal-700">H ≥25% / M ≥32%</p></div>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-teal-50 rounded-xl border border-teal-100"><span class="text-xs uppercase font-bold text-teal-600">IMC</span><span class="text-4xl font-bold text-teal-800" id="lancet-imc-val">--</span><div id="obesity-confirmation-msg" class="mt-2 text-xs md:text-sm font-semibold p-2 rounded w-full text-center">Aguardando dados...</div></div>
                         </div>
@@ -276,10 +276,10 @@
                                 <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Funcionalidade:</strong> Dificuldade mobilidade ou autocuidado.</span></label>
                             </div>
                         </div>
-                        <div class="p-6 rounded-xl text-center border-2 transition-colors mb-8" id="lancet-result-box"><p class="text-xs font-bold uppercase tracking-widest mb-2">Diagnóstico Final</p><h2 class="text-2xl md:text-5xl font-display uppercase tracking-wide mb-2 break-words" id="lancet-final-status">--</h2><p class="text-sm opacity-90" id="lancet-desc">Preencha os dados.</p></div>
+                        <div class="p-6 rounded-xl text-center border-2 transition-colors mb-8 overflow-hidden" id="lancet-result-box"><p class="text-xs font-bold uppercase tracking-widest mb-2">Diagnóstico Final</p><h2 class="text-2xl md:text-5xl font-display uppercase tracking-wide mb-2 break-words" id="lancet-final-status">--</h2><p class="text-sm opacity-90" id="lancet-desc">Preencha os dados.</p></div>
                         
                         <!-- Tabela Comparativa Restaurada -->
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto w-full">
                             <h4 class="font-bold text-sm mb-2">Resumo Comparativo</h4>
                             <table class="w-full text-xs md:text-sm text-left border rounded-lg overflow-hidden min-w-[500px]">
                                 <thead class="bg-slate-100 text-slate-700">
@@ -291,26 +291,25 @@
                                 </thead>
                                 <tbody class="divide-y divide-slate-100">
                                     <tr>
-  <td class="p-3 font-semibold">Gordura Corporal</td>
-  <td class="p-3">Confirmada como excessiva</td>
-  <td class="p-3">Confirmada como excessiva</td>
-</tr>
-<tr>
-  <td class="p-3 font-semibold">Função de Órgãos</td>
-  <td class="p-3 bg-green-50 text-green-800 rounded">Preservada</td>
-  <td class="p-3 bg-red-50 text-red-800 rounded">Alterada/Reduzida</td>
-</tr>
-<tr>
-  <td class="p-3 font-semibold">Sintomas/Sinais</td>
-  <td class="p-3">Ausentes ou mínimos</td>
-  <td class="p-3">Presentes e objetivos</td>
-</tr>
-<tr>
-  <td class="p-3 font-semibold">Objetivo Terapêutico</td>
-  <td class="p-3">Redução de risco (Profilaxia)</td>
-  <td class="p-3">Melhora ou Remissão (Tratamento)</td>
-</tr>
-
+                                        <td class="p-3 font-semibold">Gordura Corporal</td>
+                                        <td class="p-3">Confirmada como excessiva</td>
+                                        <td class="p-3">Confirmada como excessiva</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Função de Órgãos</td>
+                                        <td class="p-3 bg-green-50 text-green-800 rounded">Preservada</td>
+                                        <td class="p-3 bg-red-50 text-red-800 rounded">Alterada/Reduzida</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Sintomas/Sinais</td>
+                                        <td class="p-3">Ausentes ou mínimos</td>
+                                        <td class="p-3">Presentes e objetivos</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Objetivo Terapêutico</td>
+                                        <td class="p-3">Redução de risco (Profilaxia)</td>
+                                        <td class="p-3">Melhora ou Remissão (Tratamento)</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -319,7 +318,7 @@
                 </div>
 
                 <!-- TAB: TMB & GET -->
-                <div id="tab-tmb" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div id="tab-tmb" class="tab-content max-w-4xl mx-auto space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">TMB & GET</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -330,7 +329,7 @@
                             </div>
                             <div class="flex flex-col justify-center items-center bg-teal-50 rounded-xl p-4 border border-teal-100">
                                 <p class="text-xs uppercase font-bold text-teal-600 mb-2">Gasto Energético Total (GET)</p>
-                                <div class="text-5xl font-display text-teal-800" id="get-result">--</div>
+                                <div class="text-5xl font-display text-teal-800 break-words max-w-full text-center" id="get-result">--</div>
                                 <div class="text-sm text-teal-600 mb-4">kcal/dia</div>
                                 <div class="w-full border-t border-teal-200 pt-2 flex justify-between text-xs text-teal-700"><span>Basal (Repouso):</span><span class="font-bold" id="tmb-val-display">-- kcal</span></div>
                             </div>
@@ -340,7 +339,7 @@
                 </div>
 
                 <!-- Antropometria -->
-                <div id="tab-antropo" class="tab-content max-w-4xl mx-auto">
+                <div id="tab-antropo" class="tab-content max-w-4xl mx-auto w-full">
                     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6 border-b pb-2">Perimetria (Medidas)</h2>
                         <div class="space-y-6">
@@ -382,7 +381,7 @@
                 </div>
 
                 <!-- Dobras -->
-                <div id="tab-dobras" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div id="tab-dobras" class="tab-content max-w-4xl mx-auto space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-4">Protocolos de Dobras</h2>
                         <div class="mb-4"><select id="fold-protocol" class="w-full p-2 border rounded font-bold text-teal-800" onchange="updateFoldInputs()"><option value="pollock3">Pollock 3 Dobras</option><option value="guedes">Guedes (BR)</option><option value="durnin">Durnin & Womersley</option><option value="slaughter">Slaughter (Jovens)</option></select></div>
@@ -401,7 +400,7 @@
                 </div>
 
                 <!-- Bioimpedância -->
-                <div id="tab-bio" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div id="tab-bio" class="tab-content max-w-4xl mx-auto space-y-6 w-full">
                      <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">Bioimpedância</h2>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -418,31 +417,31 @@
                 </div>
 
                 <!-- TAB: ÍNDICES (RCQ/RCE/IAC) -->
-                <div id="tab-indices" class="tab-content max-w-4xl mx-auto space-y-6">
-                    <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200">
+                <div id="tab-indices" class="tab-content max-w-4xl mx-auto space-y-6 w-full">
+                    <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 w-full">
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">Índices Corporais</h2>
                         <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-xl">
                             <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cintura (cm)</label><input type="number" class="sync-waist w-full p-2 border rounded bg-white" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"></div>
                             <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Quadril (cm)</label><input type="number" class="sync-hip w-full p-2 border rounded bg-white" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">RCQ</h3><div id="rcq-val" class="text-3xl font-bold text-teal-600 my-2">--</div><div id="rcq-class" class="text-xs font-semibold mb-3">--</div><p class="text-xs text-slate-500 leading-tight"><strong>Relação Cintura-Quadril:</strong> Avalia o risco cardiovascular e a distribuição de gordura corporal.</p></div>
-                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">RCE</h3><div id="rce-val" class="text-3xl font-bold text-teal-600 my-2">--</div><div id="rce-class" class="text-xs font-semibold mb-3">--</div><p class="text-xs text-slate-500 leading-tight"><strong>Relação Cintura-Estatura:</strong> Indicador eficaz de gordura visceral e risco metabólico.</p></div>
-                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">IAC</h3><div id="iac-val" class="text-3xl font-bold text-teal-600 my-2">--</div><div id="iac-class" class="text-xs font-semibold mb-3">Estimativa</div><p class="text-xs text-slate-500 leading-tight"><strong>Índice de Adiposidade Corporal:</strong> Estima % gordura usando quadril e altura, sem peso.</p></div>
+                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">RCQ</h3><div id="rcq-val" class="text-3xl font-bold text-teal-600 my-2 break-words">--</div><div id="rcq-class" class="text-xs font-semibold mb-3">--</div><p class="text-xs text-slate-500 leading-tight"><strong>Relação Cintura-Quadril:</strong> Avalia o risco cardiovascular e a distribuição de gordura corporal.</p></div>
+                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">RCE</h3><div id="rce-val" class="text-3xl font-bold text-teal-600 my-2 break-words">--</div><div id="rce-class" class="text-xs font-semibold mb-3">--</div><p class="text-xs text-slate-500 leading-tight"><strong>Relação Cintura-Estatura:</strong> Indicador eficaz de gordura visceral e risco metabólico.</p></div>
+                            <div class="p-5 border rounded-xl hover:shadow-md transition"><h3 class="font-bold text-slate-700">IAC</h3><div id="iac-val" class="text-3xl font-bold text-teal-600 my-2 break-words">--</div><div id="iac-class" class="text-xs font-semibold mb-3">Estimativa</div><p class="text-xs text-slate-500 leading-tight"><strong>Índice de Adiposidade Corporal:</strong> Estima % gordura usando quadril e altura, sem peso.</p></div>
                         </div>
                     </div>
                     <div class="text-center mt-4"><a href="https://www.instagram.com/romulof.monteiro/" target="_blank" class="text-xs text-teal-600 hover:text-teal-800 transition"><i class="fa-brands fa-instagram"></i> @romulof.monteiro</a></div>
                 </div>
 
                 <!-- TAB: FÍSICO/POSTURAL (TESTES DETALHADOS) -->
-                <div id="tab-fisico" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div id="tab-fisico" class="tab-content max-w-4xl mx-auto space-y-6 w-full">
                     <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200">
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-4">Postural</h2>
                         <div class="space-y-2 text-sm mb-4">
-                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Cabeça anteriorizada</span></label>
-                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Hiperlordose lombar</span></label>
-                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Escoliose visível</span></label>
-                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600"> <span>Joelho Valgo (para dentro)</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600 flex-shrink-0"> <span>Cabeça anteriorizada</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600 flex-shrink-0"> <span>Hiperlordose lombar</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600 flex-shrink-0"> <span>Escoliose visível</span></label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="w-4 h-4 text-teal-600 flex-shrink-0"> <span>Joelho Valgo (para dentro)</span></label>
                         </div>
                         <textarea class="w-full p-2 border rounded text-sm bg-slate-50" placeholder="Observações posturais..."></textarea>
                     </div>
@@ -451,28 +450,28 @@
                         <h2 class="text-xl md:text-2xl font-bold text-teal-800 mb-6">Testes Físicos</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div class="border rounded-xl p-4 hover:shadow-sm">
-                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">1. Flexão de Braços</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="Reps"></div>
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">1. Flexão de Braços</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm flex-shrink-0" placeholder="Reps"></div>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Resistência muscular superior.</p><p><strong>Execução:</strong> Apoio solo (pés p/ homens, joelhos p/ mulheres). Flexionar até 90° e estender.</p><p><strong>Avaliação:</strong> Máximo de repetições corretas sem pausa.</p></div></details>
                             </div>
                             <div class="border rounded-xl p-4 hover:shadow-sm">
-                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">2. Abdominais (1 min)</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="Reps"></div>
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">2. Abdominais (1 min)</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm flex-shrink-0" placeholder="Reps"></div>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Resistência abdominal.</p><p><strong>Execução:</strong> Decúbito dorsal, joelhos 90°. Elevar tronco até tocar coxas. 1 minuto.</p><p><strong>Avaliação:</strong> Total de repetições em 60s.</p></div></details>
                             </div>
                             <div class="border rounded-xl p-4 hover:shadow-sm">
-                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">3. Sentar-e-Alcançar</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="cm"></div>
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">3. Sentar-e-Alcançar</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm flex-shrink-0" placeholder="cm"></div>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Flexibilidade posterior.</p><p><strong>Execução:</strong> Pernas estendidas no banco. Deslizar mãos à frente. Melhor de 3.</p><p><strong>Avaliação:</strong> Distância alcançada (cm). Maior é melhor.</p></div></details>
                             </div>
                             <div class="border rounded-xl p-4 hover:shadow-sm">
-                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">4. Cooper (12 min)</h3><input type="number" id="cooper-dist" class="w-20 p-1 border rounded text-center text-sm" placeholder="Metros" oninput="updateCalculations()"></div>
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">4. Cooper (12 min)</h3><input type="number" id="cooper-dist" class="w-20 p-1 border rounded text-center text-sm flex-shrink-0" placeholder="Metros" oninput="updateCalculations()"></div>
                                 <p class="text-xs text-slate-500 mt-1">VO2 Máx: <span id="vo2-result" class="font-bold text-teal-600">-</span> ml/kg/min</p>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded mt-2"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Capacidade cardiorrespiratória.</p><p><strong>Execução:</strong> Correr/caminhar máxima distância em 12 min.</p><p><strong>Avaliação:</strong> Distância em metros.</p></div></details>
                             </div>
                             <div class="border rounded-xl p-4 hover:shadow-sm">
-                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">5. Salto Vertical</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm" placeholder="cm"></div>
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">5. Salto Vertical</h3><input type="number" class="w-16 p-1 border rounded text-center text-sm flex-shrink-0" placeholder="cm"></div>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Potência de membros inferiores.</p><p><strong>Execução:</strong> Diferença entre alcance em pé e no salto máximo.</p><p><strong>Avaliação:</strong> Altura do salto (cm).</p></div></details>
                             </div>
                             <div class="border rounded-xl p-4 hover:shadow-sm">
-                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">6. Handgrip (Força)</h3><div class="flex gap-1"><input type="number" class="w-12 p-1 border rounded text-center text-xs" placeholder="Dir"><input type="number" class="w-12 p-1 border rounded text-center text-xs" placeholder="Esq"></div></div>
+                                <div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-700">6. Handgrip (Força)</h3><div class="flex gap-1 flex-shrink-0"><input type="number" class="w-12 p-1 border rounded text-center text-xs" placeholder="Dir"><input type="number" class="w-12 p-1 border rounded text-center text-xs" placeholder="Esq"></div></div>
                                 <details class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><summary class="text-teal-600 font-bold hover:underline mb-1">Ver Protocolo <i class="fa-solid fa-chevron-down ml-1"></i></summary><div class="space-y-1 mt-2"><p><strong>Objetivo:</strong> Força de preensão manual.</p><p><strong>Execução:</strong> Dinamômetro, braço ao lado, aperto máximo 3-5s.</p><p><strong>Ref (H):</strong> &lt;35 fraco, >50 excelente.</p><p><strong>Ref (M):</strong> &lt;22 fraco, >32 excelente.</p></div></details>
                             </div>
                         </div>
@@ -481,11 +480,11 @@
                 </div>
 
                 <!-- TAB: FOTOS (Com opção adicionar) -->
-                <div id="tab-fotos" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div id="tab-fotos" class="tab-content max-w-4xl mx-auto space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-xl md:text-2xl font-bold text-teal-800">Galeria de Fotos</h2>
-                            <button onclick="addPhotoSlot()" class="bg-teal-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-teal-700 transition no-print"><i class="fa-solid fa-plus"></i> <span class="hidden md:inline">Adicionar Foto</span><span class="md:hidden">+</span></button>
+                            <button onclick="addPhotoSlot()" class="bg-teal-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-teal-700 transition no-print flex-shrink-0"><i class="fa-solid fa-plus"></i> <span class="hidden md:inline ml-1">Adicionar Foto</span><span class="md:hidden ml-1">+</span></button>
                         </div>
                         
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" id="photo-grid">
@@ -731,20 +730,30 @@
             let rcqLimit = (gender === 'male') ? 0.90 : 0.85;
             let bfLimit = (gender === 'male') ? 25 : 32;
 
+            // Variáveis de checagem individuais
+            let waistHigh = (waist > waistLimit);
+            // isFinite garante que ao dividir por zero ou vazio (gerando Infinity) a condição seja ignorada de forma segura
+            let rcqHigh = (isFinite(rcq) && rcq > 0 && rcq > rcqLimit);
+            let rceHigh = (rce > 0.50);
+            let bfHigh = (bf > 0 && bf >= bfLimit);
+
+            let anthropoCount = 0;
+            if (waistHigh) anthropoCount++;
+            if (rcqHigh) anthropoCount++;
+            if (rceHigh) anthropoCount++;
+
             if(imc > 40) {
                 confirmed = true;
                 msg.innerText = "Obesidade confirmada (IMC > 40)";
                 msg.className = "mt-2 p-2 bg-red-100 text-red-800 rounded font-bold";
+            } else if (bfHigh || (imc > 30 && anthropoCount >= 1) || (anthropoCount >= 2)) {
+                confirmed = true;
+                msg.innerText = "Obesidade confirmada além do IMC";
+                msg.className = "mt-2 p-2 bg-red-100 text-red-800 rounded font-bold";
             } else {
-                if ((waist >= waistLimit) || (rcq >= rcqLimit) || (rce >= 0.5) || (bf >= bfLimit)) {
-                    confirmed = true;
-                    msg.innerText = "Obesidade confirmada por Antropometria";
-                    msg.className = "mt-2 p-2 bg-red-100 text-red-800 rounded font-bold";
-                } else {
-                    confirmed = false;
-                    msg.innerText = "Obesidade não confirmada";
-                    msg.className = "mt-2 p-2 bg-yellow-100 text-yellow-800 rounded font-bold";
-                }
+                confirmed = false;
+                msg.innerText = "Obesidade não confirmada";
+                msg.className = "mt-2 p-2 bg-yellow-100 text-yellow-800 rounded font-bold";
             }
 
             let complications = false;
@@ -772,22 +781,22 @@
                     box.classList.add('bg-slate-50', 'border-slate-200');
                 } else if (imc >= 25) {
                     statusText.innerText = "SOBREPESO";
-                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-yellow-600";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-yellow-600 break-words";
                     box.classList.add('bg-yellow-50', 'border-yellow-200');
                     descText.innerText = "Monitorar.";
                 } else if (imc >= 18.5) {
                     statusText.innerText = "EUTROFIA";
-                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-teal-600";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-teal-600 break-words";
                     box.classList.add('bg-teal-50', 'border-teal-200');
                     descText.innerText = "Peso Normal.";
                 } else if (imc > 0) {
                     statusText.innerText = "BAIXO PESO";
-                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-blue-500";
+                    statusText.className = "text-3xl md:text-5xl font-display uppercase tracking-wide mb-2 text-blue-500 break-words";
                     box.classList.add('bg-blue-50', 'border-blue-200');
                     descText.innerText = "Abaixo da referência.";
                 } else {
                     statusText.innerText = "Não identificado";
-                    statusText.className = "text-xl md:text-3xl font-display uppercase tracking-wide mb-2 text-slate-400";
+                    statusText.className = "text-xl md:text-3xl font-display uppercase tracking-wide mb-2 text-slate-400 break-words";
                     box.classList.add('bg-slate-50', 'border-slate-200');
                     descText.innerText = "Verifique os dados.";
                 }
