@@ -256,7 +256,20 @@
                             </p>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
                                 <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-1.5 md:p-2 border rounded text-sm" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >102 / M >88</p></div>
-                                <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCQ</label><div class="flex items-center justify-between gap-1"><span id="lancet-rcq-val" class="font-bold text-base md:text-lg text-teal-700">--</span><input type="number" class="sync-hip w-full max-w-[60px] p-1 text-xs border rounded" placeholder="Quadril" oninput="syncInputs(this, 'sync-hip'); updateCalculations();"></div><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >0.90 / M >0.85</p></div>
+                                
+                                <!-- MODIFICAÇÃO DO RCQ COM O TEXTO QUADRIL EM CM -->
+                                <div class="p-3 border rounded bg-slate-50">
+                                    <label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCQ</label>
+                                    <div class="flex items-center justify-between gap-1">
+                                        <span id="lancet-rcq-val" class="font-bold text-base md:text-lg text-teal-700">--</span>
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-[9px] text-slate-500 font-semibold mb-0.5">Quadril em cm</span>
+                                            <input type="number" class="sync-hip w-full max-w-[60px] p-1 text-xs border rounded" placeholder="Quadril" oninput="syncInputs(this, 'sync-hip'); updateCalculations();">
+                                        </div>
+                                    </div>
+                                    <p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >0.90 / M >0.85</p>
+                                </div>
+                                
                                 <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">RCE</label><span id="lancet-rce-val" class="font-bold text-base md:text-lg text-teal-700 block">--</span><p class="text-[9px] md:text-[10px] mt-1 text-slate-500"> > 0.50 (Todos)</p></div>
                                 <div class="p-3 border rounded bg-teal-50 border-teal-200"><label class="block text-[10px] md:text-xs font-bold text-teal-800 uppercase mb-1">% Gordura (método direto)</label><input type="number" id="lancet-bf-input" step="0.1" class="w-full p-1.5 md:p-2 border border-teal-300 rounded text-sm" placeholder="%" oninput="updateCalculations()"><p class="text-[9px] md:text-[10px] mt-1 text-teal-700">H ≥25% / M ≥32%</p></div>
                             </div>
@@ -265,15 +278,71 @@
                         <div class="mb-6 md:mb-8">
                             <h3 class="font-bold text-base md:text-lg text-slate-700 mb-3 flex items-center gap-2"><span class="bg-slate-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0">2</span> Diferenciação Clínica</h3>
                             <p class="text-xs md:text-sm text-slate-600 mb-4 font-medium">Se a obesidade foi constatada acima, marque se houver evidência de Disfunção de Órgãos ou Limitações.</p>
+                            
+                            <!-- MODIFICAÇÃO DAS DISFUNÇÕES DE ÓRGÃOS E LIMITAÇÕES COM CORREÇÃO DO ONCHANGE -->
                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs md:text-sm space-y-3">
                                 <h4 class="font-bold text-teal-800 border-b pb-1">Disfunções de Órgãos e Sistemas</h4>
-                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>SNC / Vias Aéreas:</strong> Pressão intracraniana, Apneia do sono.</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Respiratório / Cardiovascular:</strong> Dispneia, Hipertensão, IC.</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Metabolismo:</strong> Síndrome Metabólica (Glicose/Triglicerídeos).</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Fígado/Rim/Urinário:</strong> Esteatose, Microalbuminúria.</span></label>
-                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Musculoesquelético:</strong> Dor crônica, rigidez.</span></label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🧠 Sistema Nervoso Central (SNC):</strong> Perda de visão, dores de cabeça recorrentes ou ambos (devido ao aumento da pressão intracraniana)</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🫁 Sistema Respiratório:</strong> Hipoventilação, falta de ar, chiado ou combinação desses sintomas (devido à redução da complacência pulmonar, da complacência diafragmática ou de ambas)</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🧬 Metabolismo:</strong> Conjunto de hiperglicemia, níveis elevados de triglicerídeos e baixo colesterol HDL</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🏥 Fígado:</strong> Doença hepática esteatótica associada à disfunção metabólica com fibrose</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🩺 Sistema Renal:</strong> Microalbuminúria com redução da taxa de filtração glomerular (eGFR)</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>⚧️ Sistema Reprodutivo:</strong> Anovulação, oligomenorreia e síndrome dos ovários policísticos / Hipogonadismo masculino</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🌬️ Vias Aéreas Superiores:</strong> Apneia ou hipopneia durante o sono (devido ao aumento da resistência das vias aéreas superiores)</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>❤️ Sistema Cardiovascular:</strong> Insuficiência cardíaca com fração de ejeção reduzida / Fadiga crônica e edema em membros inferiores / Fibrilação atrial crônica ou recorrente / Hipertensão da artéria pulmonar / Trombose venosa profunda recorrente ou embolia pulmonar / Pressão arterial elevada</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🚻 Sistema Urinário:</strong> Incontinência urinária recorrente ou crônica</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🦴 Sistema Musculoesquelético:</strong> Dor crônica e intensa no joelho ou quadril (associada à rigidez articular e redução da amplitude de movimento)</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>💧 Sistema Linfático:</strong> Linfedema de membros inferiores (causando dor crônica, redução da amplitude de movimento ou ambos)</span>
+                                </label>
+
                                 <h4 class="font-bold text-teal-800 border-b pb-1 pt-2">Limitações de Atividades (AVD)</h4>
-                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"><input type="checkbox" class="lancet-check mt-1" onchange="runLancetLogic()"> <span><strong>Funcionalidade:</strong> Dificuldade mobilidade ou autocuidado.</span></label>
+                                <label class="flex items-start gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                    <input type="checkbox" class="lancet-check mt-1" onchange="updateCalculations()"> 
+                                    <span><strong>🚶 Limitações das Atividades Diárias:</strong> Limitações significativas nas atividades da vida diária, ajustadas para a idade (banho, vestir-se, higiene pessoal, continência, alimentação)</span>
+                                </label>
                             </div>
                         </div>
                         <div class="p-6 rounded-xl text-center border-2 transition-colors mb-8 overflow-hidden" id="lancet-result-box"><p class="text-xs font-bold uppercase tracking-widest mb-2">Diagnóstico Final</p><h2 class="text-2xl md:text-5xl font-display uppercase tracking-wide mb-2 break-words" id="lancet-final-status">--</h2><p class="text-sm opacity-90" id="lancet-desc">Preencha os dados.</p></div>
