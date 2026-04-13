@@ -255,7 +255,7 @@
                                 <strong>A Confirmação do Status de Obesidade</strong> é feita através da Circunferência da cintura, Relação cintura-quadril, Relação cintura-estatura ou BIA (exceto quando IMC > 40).
                             </p>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
-                                <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-1.5 md:p-2 border rounded text-sm" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >102 / M >88</p></div>
+                                <div class="p-3 border rounded bg-slate-50"><label class="block text-[10px] md:text-xs font-bold text-slate-700 uppercase mb-1">Cintura</label><input type="number" class="sync-waist w-full p-1.5 md:p-2 border rounded text-sm" placeholder="cm" oninput="syncInputs(this, 'sync-waist'); updateCalculations();"><p class="text-[9px] md:text-[10px] mt-1 text-slate-500">H >90 / M >80</p></div>
                                 
                                 <!-- MODIFICAÇÃO DO RCQ COM O TEXTO QUADRIL EM CM -->
                                 <div class="p-3 border rounded bg-slate-50">
@@ -795,7 +795,7 @@
             }
 
             let confirmed = false;
-            let waistLimit = (gender === 'male') ? 102 : 88;
+            let waistLimit = (gender === 'male') ? 90 : 80;
             let rcqLimit = (gender === 'male') ? 0.90 : 0.85;
             let bfLimit = (gender === 'male') ? 25 : 32;
 
